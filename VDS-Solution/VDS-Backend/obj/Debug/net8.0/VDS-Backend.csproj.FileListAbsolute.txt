@@ -1,0 +1,14 @@
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\VDS-Backend.exe
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\VDS-Backend.deps.json
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\VDS-Backend.runtimeconfig.json
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\VDS-Backend.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\VDS-Backend.pdb
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.GeneratedMSBuildEditorConfig.editorconfig
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.AssemblyInfoInputs.cache
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.AssemblyInfo.cs
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.csproj.CoreCompileInputs.cache
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\refint\VDS-Backend.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.pdb
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.genruntimeconfig.cache
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\ref\VDS-Backend.dll
