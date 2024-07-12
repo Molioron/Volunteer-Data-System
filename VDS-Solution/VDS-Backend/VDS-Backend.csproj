@@ -10,7 +10,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\Databases\" />
-    <Folder Include="Src\Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="SQLitePCLRaw.core" Version="2.1.8" />
   </ItemGroup>
 
 </Project>
