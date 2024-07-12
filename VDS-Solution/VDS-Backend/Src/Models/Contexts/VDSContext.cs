@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace VDS_Backend.Src.Models.Contexts
 {
-    internal class VDSContext : DbContext
+    /// <summary>
+    /// A Facade to the database context to the volunteer system.
+    /// facade in a sense that it should not be instanciated and instead a concrete class should
+    /// inherit from this class to specify what can of database is created (e.g: sqlite, postregsql, etc...)
+    /// </summary>
+    internal abstract class VDSContext : DbContext
     {
     }
 }
