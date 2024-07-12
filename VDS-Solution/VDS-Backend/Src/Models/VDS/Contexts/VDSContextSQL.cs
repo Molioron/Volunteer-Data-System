@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VDS_Backend.Src.Models.Contexts
+namespace VDS_Backend.Src.Models.VDS.Contexts
 {
     /// <summary>
     /// A concrete implementation of the context of the volunteer system database.
