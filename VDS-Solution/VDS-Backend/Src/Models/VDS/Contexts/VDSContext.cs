@@ -29,5 +29,28 @@ namespace VDS_Backend.Src.Models.VDS.Contexts
         /// The table of posts about volunteering somewhere in the system.
         /// </summary>
         public DbSet<VolunteerPost> Volunteers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure the enum conversion
+            modelBuilder.Entity<VolunteerPostJob>()
+                .Property(v => v.Job)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<VolunteerPostLocation>()
+                .Property(v => v.Location)
+                .HasConversion<int>();
+
+            // Configure relationships
+            modelBuilder.Entity<VolunteerPostJob>()
+                .HasOne(v => v.VolunteerPost)
+                .WithMany(p => p.Jobs)
+                .HasForeignKey(v => v.VolunteerPostId);
+
+            modelBuilder.Entity<VolunteerPostLocation>()
+                .HasOne(v => v.VolunteerPost)
+                .WithMany(p => p.Locations)
+                .HasForeignKey(v => v.VolunteerPostId);
+        }
     }
 }

@@ -20,10 +20,13 @@ namespace VDS_Backend.Src.Models.VDS.Tables
 
         public string Email { get; set; } // primary key
         public string Password { get; set; }
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
-        // user owned recruitment posts. navigation 
-        public ICollection<RecruitmentPost> recruitments { get; set; }
-        public ICollection<VolunteerPost> volunteers { get; set; }
+        // user owned recruitment posts.
+        // navigation property
+        public ICollection<RecruitmentPost> RecruitmentPosts { get; set; }
+        // user owned volunteer posts.
+        // navigation property
+        public ICollection<VolunteerPost> VolunteerPosts { get; set; }
     }
 }

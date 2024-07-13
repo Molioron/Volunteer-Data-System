@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,15 @@ namespace VDS_Backend.Src.Models.VDS.Tables
     /// <summary>
     /// Alows a volunteer post to have multiple types of prefered general locations.
     /// </summary>
-    [PrimaryKey(nameof(Location), nameof(VolunteerPost))]
+    [PrimaryKey(nameof(Location), nameof(VolunteerPostId))]
     internal class VolunteerPostLocation
     {
         public Location Location { get; set; }
 
+        [ForeignKey("VolunteerPost")]
+        public int VolunteerPostId { get; set; }
+
+        // navigation property
         public VolunteerPost VolunteerPost { get; set; }
     }
 }
