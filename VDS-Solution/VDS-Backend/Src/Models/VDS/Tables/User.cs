@@ -25,8 +25,5 @@ namespace VDS_Backend.Src.Models.VDS.Tables
         // user owned recruitment posts.
         // navigation property
         public ICollection<RecruitmentPost> RecruitmentPosts { get; set; }
-        // user owned volunteer posts.
-        // navigation property
-        public ICollection<VolunteerPost> VolunteerPosts { get; set; }
     }
 }
