@@ -46,7 +46,7 @@ namespace VDS_Backend.Src.Models.VDS
         {
             User u = new User()
             { FirstName = firstName, LastName = lastName,Email = email, Password = password, PhoneNumber = phoneNumber,
-            RecruitmentPosts = [], VolunteerPosts = []};
+            RecruitmentPosts = []};
 
             return AddIfNotExists(Context.Users, u) is not null;
         }
@@ -70,6 +70,23 @@ namespace VDS_Backend.Src.Models.VDS
         //public bool removeRecruitmentPost() {  }
         //public bool addVolunteerPost() { }
         //public bool removeVolunteerPost() { }
+
+        /// <summary>
+        /// Returns a user from the database from a given email
+        /// </summary>
+        /// <param name="email">email of the user</param>
+        /// <returns>the user matching the given email, otherwise null if not found.</returns>
+        public User? GetUser(string email)
+        {
+            var query = from user in Context.Users
+                        where user.Email == email
+                        select user;
+            if (query.Count() > 0)
+            {
+                return query.First(); // exactly 1 result
+            }
+            return null;
+        }
 
 
         /// <summary>

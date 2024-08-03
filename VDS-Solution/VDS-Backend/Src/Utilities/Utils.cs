@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VDS_Backend.Src
+namespace VDS_Backend.Src.Utilities
 {
     internal class Utils
     {
