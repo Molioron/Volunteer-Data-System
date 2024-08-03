@@ -3,22 +3,21 @@ using SQLitePCL;
 using VDS_Backend.Src.Models.VDS;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
+using VDS_Backend.Src.Server;
 
 
 // Initialize SQLitePCL
 Batteries_V2.Init();
 
 await using VDSContext db = new VDSContextSQLite();
-VDbHandler handler = new VDbHandler(db);
+ServerInterface serverInterface = new ServerInterface(db);
 
+serverInterface.SignUp("Jane", "Doe", "JaneDoe@gmail.com", "Jane123", "1111111111");
+serverInterface.Login("JaneDoe@gmail.com", "Jane123");
+serverInterface.Login("JohnDoe@gmail.com", "John123");
+serverInterface.Login("JaneDoe@gmail.com", "wrongPass");
+serverInterface.Login("wrongMail", "Jane123");
 
-
-Console.WriteLine("adding data");
-handler.addUser("John", "Doe", "JohnDoe@gmail.com", "JohnDoe123", "0000000000");
-handler.removeUser("JaneDoe@gmail.com");
-var post_add_res = handler.addRecruitmentPost("JohnDoe@gmail.com", "Haifa tour instructor needed", "instructor needed asap", "Somewhere in Haifa",
-    Location.North, Job.Transportation, DateTime.Now, DateTime.Now.AddDays(1));
-Console.WriteLine($"result of adding post: {post_add_res}");
 var results_all = from user in db.Users
               select user;
 
