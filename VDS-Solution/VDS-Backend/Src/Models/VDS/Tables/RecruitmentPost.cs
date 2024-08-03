@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace VDS_Backend.Src.Models.VDS.Tables
     /// </summary>
     internal class RecruitmentPost
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } // primary key auto incremented.
 
         [ForeignKey("User")]

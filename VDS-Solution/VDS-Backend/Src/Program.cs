@@ -16,9 +16,9 @@ VDbHandler handler = new VDbHandler(db);
 Console.WriteLine("adding data");
 handler.addUser("John", "Doe", "JohnDoe@gmail.com", "JohnDoe123", "0000000000");
 handler.removeUser("JaneDoe@gmail.com");
-handler.addRecruitmentPost("JohnDoe@gmail.com", "Haifa tour instructor needed", "instructor needed asap", "Somewhere in Haifa",
+var post_add_res = handler.addRecruitmentPost("JohnDoe@gmail.com", "Haifa tour instructor needed", "instructor needed asap", "Somewhere in Haifa",
     Location.North, Job.Transportation, DateTime.Now, DateTime.Now.AddDays(1));
-
+Console.WriteLine($"result of adding post: {post_add_res}");
 var results_all = from user in db.Users
               select user;
 

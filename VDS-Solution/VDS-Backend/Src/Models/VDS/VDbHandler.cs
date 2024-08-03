@@ -10,6 +10,7 @@ using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.Tables;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using VDS_Backend.Src.Models.VDS.DataTypes;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace VDS_Backend.Src.Models.VDS
 {
@@ -72,20 +73,29 @@ namespace VDS_Backend.Src.Models.VDS
 
 
         /// <summary>
-        /// Adds an entity to the databse if and only if it does not already exist.
+        /// Adds an entity to the database if and only if it does not already exist, 
+        /// where "exists" means that there is no entity in the given dbSet with identical key(s) to the given entity.
         /// </summary>
         /// <typeparam name="T">entity type</typeparam>
         /// <param name="dbSet">the table to add to</param>
         /// <param name="entity">the entity to add</param>
-        /// <param name="predicate">additional predicate, an entity exists if it's in the table and satisfies this predicate.
-        /// if predicate = null, then the predicate is ignored.</param>
         /// <returns>The entry to this entity, or null if the entry exists already.</returns>
-        private EntityEntry<T>? AddIfNotExists<T>(DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        private EntityEntry<T>? AddIfNotExists<T>(DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class
         {
-            var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any();
-            var res = !exists ? dbSet.Add(entity) : null;
-            if (res != null) { Context.SaveChanges(); } // save only if there is a change
-            return res;
+            var keyProperties = Context.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties;
+
+            var keyValues = keyProperties.Select(p => p.PropertyInfo.GetValue(entity)).ToArray();
+
+            var existingEntity = dbSet.Find(keyValues);
+
+            if (existingEntity == null)
+            {
+                var result = dbSet.Add(entity);
+                Context.SaveChanges();
+                return result;
+            }
+
+            return null;
         }
         /// <summary>
         /// Removes an entity based on a given primary key.
