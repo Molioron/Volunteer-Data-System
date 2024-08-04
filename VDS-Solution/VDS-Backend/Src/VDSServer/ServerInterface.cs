@@ -7,7 +7,7 @@ using VDS_Backend.Src.Models.VDS;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Utilities;
 
-namespace VDS_Backend.Src.Server
+namespace VDS_Backend.Src.VDSServer
 {
     /// <summary>
     /// Class that represents the interface between the client and the server.
