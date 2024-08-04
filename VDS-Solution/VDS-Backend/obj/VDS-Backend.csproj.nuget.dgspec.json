@@ -68,6 +68,10 @@
             "SQLitePCLRaw.core": {
               "target": "Package",
               "version": "[2.1.8, )"
+            },
+            "Watson": {
+              "target": "Package",
+              "version": "[6.2.2, )"
             }
           },
           "imports": [

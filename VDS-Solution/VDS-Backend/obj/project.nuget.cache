@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "XmuZ2RQ4rpq4U3tXiZ2Nz6zXiLOZVX5HydvaPaeSPMqL1hBjSNvBIcA++zlDNHkkffBxXTH5kqDNIZl2g4KKWA==",
+  "dgSpecHash": "iwZClrEhsHv5Myw3SeeFVYAIDmHdtyhTItQypG5KY6FCS6ciFjt/ggcA1YngD6/SrA7YBsS73fbGJKEVGzQ7fg==",
   "success": true,
   "projectFilePath": "D:\\Program Files\\C# Projects\\Repos\\Molioron\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\ipmatcher\\1.0.4.4\\ipmatcher.1.0.4.4.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlite\\8.0.7\\microsoft.data.sqlite.8.0.7.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.7\\microsoft.data.sqlite.core.8.0.7.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.entityframeworkcore\\8.0.7\\microsoft.entityframeworkcore.8.0.7.nupkg.sha512",
@@ -22,13 +23,18 @@
     "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.options\\8.0.0\\microsoft.extensions.options.8.0.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\regexmatcher\\1.0.8\\regexmatcher.1.0.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.8\\sqlitepclraw.bundle_e_sqlite3.2.1.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.core\\2.1.8\\sqlitepclraw.core.2.1.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.8\\sqlitepclraw.lib.e_sqlite3.2.1.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\sqlitepclraw.provider.e_sqlite3\\2.1.8\\sqlitepclraw.provider.e_sqlite3.2.1.8.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\system.text.json\\8.0.4\\system.text.json.8.0.4.nupkg.sha512"
+    "C:\\Users\\user\\.nuget\\packages\\system.text.json\\8.0.4\\system.text.json.8.0.4.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\timestamps\\1.0.9\\timestamps.1.0.9.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\urlmatcher\\3.0.0\\urlmatcher.3.0.0.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\watson\\6.2.2\\watson.6.2.2.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\watson.core\\6.2.2\\watson.core.6.2.2.nupkg.sha512"
   ],
   "logs": []
 }

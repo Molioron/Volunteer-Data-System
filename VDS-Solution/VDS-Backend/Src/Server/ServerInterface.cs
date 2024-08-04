@@ -72,7 +72,7 @@ namespace VDS_Backend.Src.Server
             {
                 connectionKey = GenerateNewKey(email);
             }
-            Console.WriteLine($"login status: {status}, key: {connectionKey}");
+            Console.WriteLine($"login to user \"{email}\" status: {status}, key: {connectionKey}");
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ ServerInterface serverInterface = new ServerInterface(db);
 
 serverInterface.SignUp("Jane", "Doe", "JaneDoe@gmail.com", "Jane123", "1111111111");
 serverInterface.Login("JaneDoe@gmail.com", "Jane123");
-serverInterface.Login("JohnDoe@gmail.com", "John123");
+serverInterface.Login("JohnDoe@gmail.com", "JohnDoe123");
 serverInterface.Login("JaneDoe@gmail.com", "wrongPass");
 serverInterface.Login("wrongMail", "Jane123");
 

@@ -15,6 +15,11 @@ namespace VDS_Backend.Src.Utilities
         // all possible characters for random string generation
         private const string ALL_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+        /// <summary>
+        /// Generates a random string of characters from a given length.
+        /// </summary>
+        /// <param name="length">the length of the random string</param>
+        /// <returns></returns>
         public static string GenerateRandomString(int length)
         {
             var stringBuilder = new StringBuilder(length);
