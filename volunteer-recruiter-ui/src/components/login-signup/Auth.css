@@ -1,0 +1,46 @@
+/* Auth.css */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    text-align: left; /* Change from center to left */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .form-group {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  
+  label {
+    width: 100px; /* Adjust this width as needed */
+    text-align: right;
+    margin-right: 10px;
+  }
+  
+  input {
+    flex: 1;
+    padding: 5px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
