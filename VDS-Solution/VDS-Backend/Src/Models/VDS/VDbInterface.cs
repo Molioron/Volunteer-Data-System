@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VDS_Backend.Src.Models.VDS.Contexts;
+using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Models.VDS.Tables;
 using VDS_Backend.Src.Utilities;
 
@@ -41,7 +42,8 @@ namespace VDS_Backend.Src.Models.VDS
         /// <returns>Success when signed up successfully, otherwise AlreadyExistsError</returns>
         public OperationStatus SignUp(string firstName, string lastName, string email, string password, string phoneNumber)
         {
-            if(handler.addUser(firstName, lastName, email, password, phoneNumber))
+            // post added successfully
+            if (handler.addUser(firstName, lastName, email, password, phoneNumber))
             {
                 return OperationStatus.Success;
             }
@@ -64,6 +66,29 @@ namespace VDS_Backend.Src.Models.VDS
             // password mismatch
             if (!user.Password.Equals(password)) { return OperationStatus.CredentialsError; }
             return OperationStatus.Success;
+        }
+
+        /// <summary>
+        /// Creates a new recruitment post for a given user.
+        /// </summary>
+        /// <param name="email">the user who owns the post</param>
+        /// <param name="title">the title of the post</param>
+        /// <param name="description">the description of the post</param>
+        /// <param name="address">the address of the place of volunteering</param>
+        /// <param name="volunteerArea">the general location of the place of volunteering</param>
+        /// <param name="jobType">the general job/work in the place of volunteering</param>
+        /// <param name="initialDate">initial date of the duration of volunteering</param>
+        /// <param name="lastDate">last date of the duration of volunteering</param>
+        /// <returns>Sucess if the post was created successfully, otherwise ServerError.</returns>
+        public OperationStatus CreatePost(string email, string title, string description,
+            string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
+        {
+            if(handler.addRecruitmentPost(email,title, description, address, volunteerArea, jobType,
+                initialDate, lastDate))
+            {
+                return OperationStatus.Success; // post added successfully
+            }
+            return OperationStatus.ServerError; // for some reason could not create post.
         }
     }
 }

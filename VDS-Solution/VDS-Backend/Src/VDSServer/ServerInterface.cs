@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VDS_Backend.Src.Models.VDS;
 using VDS_Backend.Src.Models.VDS.Contexts;
+using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Utilities;
 
 namespace VDS_Backend.Src.VDSServer
@@ -64,7 +65,7 @@ namespace VDS_Backend.Src.VDSServer
         /// <param name="email">email of the user</param>
         /// <param name="password">password of the user</param>
         /// <returns>Sucess and a connection key if logged in successfully, otherwise CredentialsError.</returns>
-        public void Login(string email, string password)
+        public string Login(string email, string password)
         {
             var status = dbInterface.Login(email, password);
             string? connectionKey = null;
@@ -73,6 +74,50 @@ namespace VDS_Backend.Src.VDSServer
                 connectionKey = GenerateNewKey(email);
             }
             Console.WriteLine($"login to user \"{email}\" status: {status}, key: {connectionKey}");
+            return connectionKey;
+        }
+
+        /// <summary>
+        /// closes the user connection, removing the connection key from memory.
+        /// </summary>
+        /// <param name="connectionKey">connection key to remove</param>
+        /// <returns>Sucess if removed successfully, otherwise CredentialsError</returns>
+        public OperationStatus Logout(string connectionKey)
+        {
+            if(connections.ContainsKey(connectionKey))
+            {
+                connections.Remove(connectionKey);
+                return OperationStatus.Success;
+            }
+            return OperationStatus.CredentialsError;
+        }
+
+        /// <summary>
+        /// Create a new recruitment post based on the given arguments.
+        /// </summary>
+        /// <param name="connectionKey">the connection. used to find the user who owns the post</param>
+        /// <param name="title">the title of the post</param>
+        /// <param name="description">the description of the post</param>
+        /// <param name="address">the address of the place of volunteering</param>
+        /// <param name="volunteerArea">the general location of the place of volunteering</param>
+        /// <param name="jobType">the general job/work in the place of volunteering</param>
+        /// <param name="initialDate">initial date of the duration of volunteering</param>
+        /// <param name="lastDate">last date of the duration of volunteering</param>
+        public void CreatePost(string connectionKey, string title, string description,
+            string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
+        {
+            // user email of the connection key
+            string? email = GetEmailFromKey(connectionKey);
+            if (email is null) // sanity check: connection key must be exist
+            {
+                Console.WriteLine($"CredentialsError: invalid connection key \"{connectionKey}\".");
+                return;
+            }
+
+            // status result of creating post
+            OperationStatus status = dbInterface.CreatePost(email, title, description, address,
+                volunteerArea, jobType, initialDate, lastDate);
+            Console.WriteLine($"creating post for user \"{email}\", called \"{title}\" about \"{description}\". status: {status}");
         }
 
         /// <summary>
@@ -91,6 +136,20 @@ namespace VDS_Backend.Src.VDSServer
             while (connections.ContainsKey(connectionKey));
             connections.Add(connectionKey, email);
             return connectionKey;
+        }
+
+        /// <summary>
+        /// Returns the email of the user that matches the given key, or null if no user matches.
+        /// </summary>
+        /// <param name="connectionKey">connection key of logged in user.</param>
+        /// <returns>the email of the user that matches the given key, or null if no user matches.</returns>
+        private string? GetEmailFromKey(string connectionKey)
+        {
+            if (connections.ContainsKey(connectionKey))
+            {
+                return connections[connectionKey];
+            }
+            return null;
         }
     }
 }
