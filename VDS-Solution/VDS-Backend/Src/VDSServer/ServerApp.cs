@@ -30,6 +30,7 @@ namespace VDS_Backend.Src.VDSServer
             
             server = new HostBuilder(hostname, port, false, DefaultRoute)
                 .MapParameterRoute(WatsonWebserver.Core.HttpMethod.GET, "/greet", GreetRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/goodbye", GoodbyeRoute)
                 .Build();
             server.Start();
             OnStart();
@@ -75,6 +76,28 @@ namespace VDS_Backend.Src.VDSServer
                 ctx.Response.ContentType = "application/json";
                 await ctx.Response.Send(jsonErrorResponse);
             }
+        }
+        static async Task GoodbyeRoute(HttpContextBase ctx)
+        {
+            // Read the request body
+            string requestBody = ctx.Request.DataAsString;
+
+            // Deserialize the JSON to get the "name" parameter
+            var requestData = JsonConvert.DeserializeObject<RequestData>(requestBody);
+
+            // Create the response message
+            var responseMessage = new { message = $"Goodbye, {requestData.Name}!" };
+
+            // Serialize the response message to JSON
+            string jsonResponse = JsonConvert.SerializeObject(responseMessage);
+
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(jsonResponse);
+        }
+        private class RequestData
+        {
+            public string Name { get; set; }
         }
 
         /// <summary>

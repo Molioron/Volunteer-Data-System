@@ -20,4 +20,5 @@ serverInterface.Login("wrongMail", "Jane123");
 serverInterface.CreatePost("11111", "Bus driver needed", "looking for a bus driver in haifa.",
     "somewhere in Haifa", Location.North, Job.Transportation, DateTime.Now, DateTime.Now.AddDays(1));
 
-//ServerApp.Run("localhost", 9000);
+ServerApp.Run("localhost", 9000);
+// curl -X POST http://localhost:9000/goodbye -H "Content-Type: application/json" -d "{\"name\": \"John\"}"
