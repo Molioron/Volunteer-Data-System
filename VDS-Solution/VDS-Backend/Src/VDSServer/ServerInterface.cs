@@ -54,7 +54,7 @@ namespace VDS_Backend.Src.VDSServer
         {
             var status = dbInterface.SignUp(firstName, lastName, email, password, phoneNumber);
             Console.WriteLine($"sign up status: {status}");
-            if (status == OperationStatus.Success)
+            if (status.Code == StatusCode.Success)
             { Login(email, password); }
         }
 
@@ -69,11 +69,11 @@ namespace VDS_Backend.Src.VDSServer
         {
             var status = dbInterface.Login(email, password);
             string? connectionKey = null;
-            if (status == OperationStatus.Success)
+            if (status.Code == StatusCode.Success)
             {
                 connectionKey = GenerateNewKey(email);
             }
-            Console.WriteLine($"login to user \"{email}\" status: {status}, key: {connectionKey}");
+            Console.WriteLine($"login to user \"{email}\" status: {status.Message}, key: {connectionKey}");
             return connectionKey;
         }
 
@@ -81,15 +81,14 @@ namespace VDS_Backend.Src.VDSServer
         /// closes the user connection, removing the connection key from memory.
         /// </summary>
         /// <param name="connectionKey">connection key to remove</param>
-        /// <returns>Sucess if removed successfully, otherwise CredentialsError</returns>
+        /// <returns>Success even if there is nothing to remove, for security reasons.</returns>
         public OperationStatus Logout(string connectionKey)
         {
             if(connections.ContainsKey(connectionKey))
             {
                 connections.Remove(connectionKey);
-                return OperationStatus.Success;
             }
-            return OperationStatus.CredentialsError;
+            return OperationStatus.SUCCESS;
         }
 
         /// <summary>

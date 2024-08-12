@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VDS_Backend.Src.Models.VDS.Contexts;
+﻿using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Models.VDS.Tables;
 using VDS_Backend.Src.Utilities;
@@ -45,9 +40,9 @@ namespace VDS_Backend.Src.Models.VDS
             // post added successfully
             if (handler.addUser(firstName, lastName, email, password, phoneNumber))
             {
-                return OperationStatus.Success;
+                return OperationStatus.SUCCESS;
             }
-            return OperationStatus.AlreadyExistsError;
+            return OperationStatus.SIGNUP_USER_EXISTS_ERROR;
         }
 
 
@@ -62,10 +57,10 @@ namespace VDS_Backend.Src.Models.VDS
             // user from db
             User? user = handler.GetUser(email);
             // user does not exist
-            if (user == null) { return OperationStatus.CredentialsError; }
+            if (user == null) { return OperationStatus.LOGIN_WRONG_EMAIL_PASSWORD_ERROR; }
             // password mismatch
-            if (!user.Password.Equals(password)) { return OperationStatus.CredentialsError; }
-            return OperationStatus.Success;
+            if (!user.Password.Equals(password)) { return OperationStatus.LOGIN_WRONG_EMAIL_PASSWORD_ERROR; }
+            return OperationStatus.SUCCESS;
         }
 
         /// <summary>
@@ -86,9 +81,9 @@ namespace VDS_Backend.Src.Models.VDS
             if(handler.addRecruitmentPost(email,title, description, address, volunteerArea, jobType,
                 initialDate, lastDate))
             {
-                return OperationStatus.Success; // post added successfully
+                return OperationStatus.SUCCESS; // post added successfully
             }
-            return OperationStatus.ServerError; // for some reason could not create post.
+            return OperationStatus.FAILED_POST_CREATION_ERROR; // for some reason could not create post.
         }
     }
 }

@@ -6,17 +6,40 @@ using System.Threading.Tasks;
 
 namespace VDS_Backend.Src.Utilities
 {
-    internal enum OperationStatus
+    /// <summary>
+    /// Either success or error category types
+    /// </summary>
+    internal enum StatusCode
     {
         // successful operation
         Success,
         // result not found
         NotFoundError,
-        // connection key is invalid or couldn't login successfully
+        // couldn't login successfully
         CredentialsError,
         // something already exists in the database.
         AlreadyExistsError,
         // generic server error
         ServerError,
+    }
+
+    /// <summary>
+    /// A pair of a status code and the message related to it
+    /// </summary>
+    internal class OperationStatus
+    {
+        public static readonly OperationStatus SUCCESS = new OperationStatus(StatusCode.Success, "Success.");
+        public static readonly OperationStatus SIGNUP_USER_EXISTS_ERROR = new OperationStatus(StatusCode.AlreadyExistsError, "User already exists.");
+        public static readonly OperationStatus LOGIN_WRONG_EMAIL_PASSWORD_ERROR = new OperationStatus(StatusCode.CredentialsError, "Wrong email or password.");
+        public static readonly OperationStatus FAILED_POST_CREATION_ERROR = new OperationStatus(StatusCode.ServerError, "Failed to create post.");
+
+        public StatusCode Code { get; }
+        public string Message { get; }
+
+        private OperationStatus(StatusCode code, string message)
+        {
+            Code = code;
+            Message = message;
+        }
     }
 }
