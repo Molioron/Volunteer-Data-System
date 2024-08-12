@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 using VDS_Backend.Src.Models.VDS;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Utilities;
+using WatsonWebserver.Core;
 
 namespace VDS_Backend.Src.VDSServer
 {
@@ -14,7 +11,7 @@ namespace VDS_Backend.Src.VDSServer
     /// Class that represents the interface between the client and the server.
     /// contains methods that the client and server agree upon, such as login, sign up and more.
     /// </summary>
-    internal class ServerInterface
+    internal partial class ServerInterface
     {
         /// <summary>
         /// The live connection keys established by the client and server.
@@ -42,39 +39,81 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
-        /// Adds a new user to the database from the given data.
+        /// Adds a new user to the database from the given data sent to the server.
         /// </summary>
-        /// <param name="firstName">user's first name</param>
-        /// <param name="lastName">user's last name</param>
-        /// <param name="email">user's email</param>
-        /// <param name="password">password</param>
-        /// <param name="phoneNumber">user's phone number</param>
-        /// <returns>Success when signed up successfully, otherwise AlreadyExistsError</returns>
-        public void SignUp(string firstName, string lastName, string email, string password, string phoneNumber)
+        /// <param name="ctx">the http context</param>
+        /// <returns>Json resposnse, either same success/error response as login, or
+        /// error and empty connectionKey if failed to sign up.</returns>
+        public string SignUp(HttpContextBase ctx)
         {
-            var status = dbInterface.SignUp(firstName, lastName, email, password, phoneNumber);
-            Console.WriteLine($"sign up status: {status}");
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var signupInput = SafeDeserializeObjectToJson<SignupInputPayload>(body);
+
+            // status of operation
+            // default is unknown payload if signupInput is null
+            var status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+
+            if (signupInput != null) // sanity check: signInput mustn't be unparsed
+            {
+                // result status
+                status = dbInterface.SignUp(signupInput.FirstName, signupInput.LastName,
+                    signupInput.Email, signupInput.Password, signupInput.Phone);
+            }
+
+            // login if successfully signed up
             if (status.Code == StatusCode.Success)
-            { Login(email, password); }
+            { return Login(ctx); }
+
+            // failed to signup response
+            var failureResponse = new
+            {
+                operationStatus = JsonConvert.SerializeObject(status),
+                connectionKey = ""
+            };
+            return JsonConvert.SerializeObject(failureResponse);
         }
 
         /// <summary>
         /// logs in a user into the system and returns a connection key if
         /// a valid user connection was established.
         /// </summary>
-        /// <param name="email">email of the user</param>
-        /// <param name="password">password of the user</param>
-        /// <returns>Sucess and a connection key if logged in successfully, otherwise CredentialsError.</returns>
-        public string Login(string email, string password)
+        /// <param name="ctx">the http context</param>
+        /// <returns>Json response as a result. Either contains success and connection if succeeded,
+        /// or otherwise some error and empty connection key if failed.</returns>
+        public string Login(HttpContextBase ctx)
         {
-            var status = dbInterface.Login(email, password);
-            string? connectionKey = null;
-            if (status.Code == StatusCode.Success)
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var loginInput = SafeDeserializeObjectToJson<LoginInputPayload>(body);
+
+            // Attempt to generate the connection key of the session
+            // otherwise connection key stays empty
+            string generatedConnectionKey = "";
+
+            // status of operation
+            // default is unknown payload if loginInput is null
+            var status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+
+            if (loginInput != null) // sanity check: input isn't null in order to attempt login
             {
-                connectionKey = GenerateNewKey(email);
+                // result status
+                status = dbInterface.Login(loginInput.Email, loginInput.Password);
+                if (status.Code == StatusCode.Success)
+                {
+                    generatedConnectionKey = GenerateNewKey(loginInput.Email);
+                }
             }
-            Console.WriteLine($"login to user \"{email}\" status: {status.Message}, key: {connectionKey}");
-            return connectionKey;
+
+            // the response sent due to the request
+            // connectionKey will stay empty if couldn't login
+            var response = new
+            {
+                operationStatus = JsonConvert.SerializeObject(status),
+                connectionKey = generatedConnectionKey
+            };
+
+            return JsonConvert.SerializeObject(response);
         }
 
         /// <summary>
@@ -120,6 +159,14 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
+        /// Clear all current connections of the server.
+        /// </summary>
+        public void ClearConnections()
+        {
+            connections.Clear();
+        }
+
+        /// <summary>
         /// Generates a connection key that is just now registered to the connections dict.
         /// </summary>
         /// <param name="email">email of the user to attach to the connection key</param>
@@ -149,6 +196,25 @@ namespace VDS_Backend.Src.VDSServer
                 return connections[connectionKey];
             }
             return null;
+        }
+
+        /// <summary>
+        /// Use JsonConvert.DeserializeObject to convert json string to object T,
+        /// if any exception occurs return null
+        /// </summary>
+        /// <typeparam name="T">Object to deserialize to</typeparam>
+        /// <param name="json">json string to deserialize</param>
+        /// <returns>Deserialized object, or null if failed.</returns>
+        private T? SafeDeserializeObjectToJson<T>(string json) where T : class
+        {
+            T? result = null;
+            try
+            {
+                result = JsonConvert.DeserializeObject<T>(json);
+            }
+            catch (Exception ex) { return null; }
+            return result;
+
         }
     }
 }
