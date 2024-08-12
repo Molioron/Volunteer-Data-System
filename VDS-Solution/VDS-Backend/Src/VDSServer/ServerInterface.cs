@@ -119,15 +119,33 @@ namespace VDS_Backend.Src.VDSServer
         /// <summary>
         /// closes the user connection, removing the connection key from memory.
         /// </summary>
-        /// <param name="connectionKey">connection key to remove</param>
+        /// <param name="ctx">the http context</param>
         /// <returns>Success even if there is nothing to remove, for security reasons.</returns>
-        public OperationStatus Logout(string connectionKey)
+        public string Logout(HttpContextBase ctx)
         {
-            if(connections.ContainsKey(connectionKey))
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var logoutInput = SafeDeserializeObjectToJson<LogoutInputPayload>(body);
+            
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (logoutInput != null)
             {
-                connections.Remove(connectionKey);
+                status = OperationStatus.SUCCESS;
+                if (connections.ContainsKey(logoutInput.ConnectionKey))
+                {
+                    Console.WriteLine("\tSuccessfully logged out.");
+                    connections.Remove(logoutInput.ConnectionKey);
+                }
             }
-            return OperationStatus.SUCCESS;
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = JsonConvert.SerializeObject(status),
+            };
+            return JsonConvert.SerializeObject(response);
         }
 
         /// <summary>

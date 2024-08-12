@@ -31,5 +31,13 @@ namespace VDS_Backend.Src.VDSServer
             public string Email { get; set; }
             public string Password { get; set; }
         }
+
+        /// <summary>
+        /// input received from logout
+        /// </summary>
+        private class LogoutInputPayload
+        {
+            public string ConnectionKey { get; set; }
+        }
     }
 }

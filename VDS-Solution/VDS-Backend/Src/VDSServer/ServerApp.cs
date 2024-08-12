@@ -36,6 +36,7 @@ namespace VDS_Backend.Src.VDSServer
             server = new HostBuilder(hostname, port, false, DefaultRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/signup", SignupRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.GET, "/login", LoginRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/logout", LogoutRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();
             serverInterface = new ServerInterface(db);
@@ -49,22 +50,36 @@ namespace VDS_Backend.Src.VDSServer
 
         }
 
+        // default route
         static async Task DefaultRoute(HttpContextBase ctx) =>
             await ctx.Response.Send("Hello from default route!");
 
+        // route to sign up users
         static async Task SignupRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[SIGNUP] {ctx.Request.Source.IpAddress}: {ctx.Request.DataAsString}");
+            Console.WriteLine($"[SIGNUP] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.\n");
             string response = serverInterface.SignUp(ctx);
             // Send the JSON response
             ctx.Response.ContentType = "application/json";
             await ctx.Response.Send(response);
         }
 
+        // route to login as a user
         static async Task LoginRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[LOGIN] {ctx.Request.Source.IpAddress}: {ctx.Request.DataAsString}");
+            Console.WriteLine($"[LOGIN] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.\n");
             string response = serverInterface.Login(ctx);
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(response);
+        }
+
+        // route to logout as a user
+        static async Task LogoutRoute(HttpContextBase ctx)
+        {
+            Console.WriteLine($"[LOGOUT] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = serverInterface.Logout(ctx);
+            Console.WriteLine();
             // Send the JSON response
             ctx.Response.ContentType = "application/json";
             await ctx.Response.Send(response);
