@@ -35,7 +35,7 @@ namespace VDS_Backend.Src.VDSServer
             
             server = new HostBuilder(hostname, port, false, DefaultRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/signup", SignupRoute)
-                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.GET, "/login", LoginRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/login", LoginRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/logout", LogoutRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using VDS_Backend.Src.Models.VDS;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
@@ -68,10 +69,10 @@ namespace VDS_Backend.Src.VDSServer
             // failed to signup response
             var failureResponse = new
             {
-                operationStatus = JsonConvert.SerializeObject(status),
+                operationStatus = SafeSerializeObject(status),
                 connectionKey = ""
             };
-            return JsonConvert.SerializeObject(failureResponse);
+            return SafeSerializeObject(failureResponse);
         }
 
         /// <summary>
@@ -109,11 +110,11 @@ namespace VDS_Backend.Src.VDSServer
             // connectionKey will stay empty if couldn't login
             var response = new
             {
-                operationStatus = JsonConvert.SerializeObject(status),
+                operationStatus = SafeSerializeObject(status),
                 connectionKey = generatedConnectionKey
             };
 
-            return JsonConvert.SerializeObject(response);
+            return SafeSerializeObject(response);
         }
 
         /// <summary>
@@ -143,9 +144,9 @@ namespace VDS_Backend.Src.VDSServer
             // the response sent due to the request
             var response = new
             {
-                operationStatus = JsonConvert.SerializeObject(status),
+                operationStatus = SafeSerializeObject(status),
             };
-            return JsonConvert.SerializeObject(response);
+            return SafeSerializeObject(response);
         }
 
         /// <summary>
@@ -233,6 +234,21 @@ namespace VDS_Backend.Src.VDSServer
             catch (Exception ex) { return null; }
             return result;
 
+        }
+
+        /// <summary>
+        /// Safely serialize an object into json string, by converting enums to string representation
+        /// </summary>
+        /// <param name="obj">object to serialize</param>
+        /// <returns>json serialized object</returns>
+        private string SafeSerializeObject(Object obj)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Converters = { new StringEnumConverter() },
+            };
+
+            return JsonConvert.SerializeObject(obj, settings);
         }
     }
 }
