@@ -3,6 +3,7 @@ using SQLitePCL;
 using VDS_Backend.Src.Models.VDS;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
+using VDS_Backend.Src.Models.VDS.Tables;
 using VDS_Backend.Src.VDSServer;
 
 

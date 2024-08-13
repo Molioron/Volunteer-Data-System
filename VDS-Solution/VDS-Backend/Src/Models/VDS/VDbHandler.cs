@@ -11,6 +11,7 @@ using VDS_Backend.Src.Models.VDS.Tables;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using VDS_Backend.Src.Models.VDS.DataTypes;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Net;
 
 namespace VDS_Backend.Src.Models.VDS
 {
@@ -71,9 +72,15 @@ namespace VDS_Backend.Src.Models.VDS
         /// <param name="initialDate">initial date of the duration of volunteering</param>
         /// <param name="lastDate">last date of the duration of volunteering</param>
         /// <returns>true if the post was created successfully, otherwise false.</returns>
+        /// <exception cref="ArgumentException">if initial date is after last date.</exception>
         public bool addRecruitmentPost(string userEmail, string title, string description, string address,
             Location location, Job job, DateTime initialDate, DateTime lastDate)
         {
+            if (initialDate > lastDate) // sanity check: initial date is not after last date.
+            {
+                throw new ArgumentException("Specified initialDate is after lastDate!");
+            }
+
             var post = new RecruitmentPost()
             { UserEmail = userEmail, Title = title, Description = description, Address = address, Location = location,
             Job = job, InitialDate = initialDate, LastDate = lastDate};
@@ -87,6 +94,120 @@ namespace VDS_Backend.Src.Models.VDS
         public bool removeRecruitmentPost(int id)
         {
             return RemoveIfNotExists(Context.Recruitments, id);
+        }
+
+        /// <summary>
+        /// Return all posts that have one of the specified volunteerAreas,
+        /// one of the specified jobs, and either dates range is contained in the specified range
+        /// or intersects with, dependent on the DateFilterType.
+        /// no locations, no jobs, or null dates / date filter type, then the method
+        /// will ignore these filtering options. 
+        /// </summary>
+        /// <param name="volunteerAreas">posts must have one of the locations specified</param>
+        /// <param name="jobTypes">posts must have one of the jobs specified</param>
+        /// <param name="initialDate">initial date specified</param>
+        /// <param name="endDate">end date specified</param>
+        /// <param name="dateFilterType">type of date filtering (Contains, or Intersects)</param>
+        /// <returns>An array of posts that satisfy the specified filter</returns>
+        /// <exception cref="NotImplementedException">if dateFilterType is neither Contains or Intersects</exception>
+        /// <exception cref="ArgumentException">if initialDate is after endDate</exception>
+        public RecruitmentPost[] GetFilteredPosts(Location[] volunteerAreas,
+            Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType)
+        {
+            if (initialDate > endDate) // sanity check: initial date must not be after end date
+            { throw new ArgumentException("initialDate must not be after endDate"); }
+
+            // only posts
+            var query = Context.Recruitments.Include(r => r.User).AsQueryable();
+
+            // filter by location and job type
+            if (volunteerAreas.Length > 0) // filter only when necessary
+            {
+                query = query.Where(posts => volunteerAreas.Contains(posts.Location));
+            }
+
+            if (jobTypes.Length > 0) // filter only when necessary
+            {
+                query = query.Where(posts => jobTypes.Contains(posts.Job));
+            }
+
+            // filter by date only when necessary (all not null)
+            if (initialDate is not null && endDate is not null && dateFilterType is not null)
+            {
+                // filter by date according to dateFilterType
+                switch (dateFilterType)
+                {
+                    case DateFilterType.Contains:
+                        query = query.Where(posts => initialDate <= posts.InitialDate &&
+                        posts.InitialDate <= posts.LastDate &&
+                        posts.LastDate <= endDate);
+                        break;
+
+                    case DateFilterType.Intersects:
+                        query = query.Where(posts => posts.InitialDate <= posts.LastDate &&
+                                                     ((initialDate <= posts.LastDate && posts.LastDate <= endDate) ||
+                                                      (initialDate <= posts.InitialDate && posts.InitialDate <= endDate)) ||
+                                                      (posts.InitialDate <= initialDate && endDate <= posts.LastDate));
+                        break;
+
+                    default:
+                        throw new NotImplementedException("Unknown DateFilterType value.");
+                }
+            }
+
+            return query.ToArray();
+        }
+
+        /// <summary>
+        /// Returns all posts currently saved, and made by a specific user.
+        /// </summary>
+        /// <param name="email">email of the user who owns the posts.</param>
+        /// <returns>all posts currently saved, and made by a specific user.</returns>
+        public RecruitmentPost[] GetUserPosts(string email)
+        {
+            var query = from posts in Context.Recruitments.Include(r => r.User)
+                        where posts.User.Email == email
+                        select posts;
+            return query.ToArray();
+        }
+
+        /// <summary>
+        /// Update the post of a user witha specific id.
+        /// </summary>
+        /// <param name="email">user email</param>
+        /// <param name="id">post id</param>
+        /// <param name="title">new title</param>
+        /// <param name="description">new description</param>
+        /// <param name="address">new address</param>
+        /// <param name="volunteerArea">new volunteerArea</param>
+        /// <param name="jobType">new jobType</param>
+        /// <param name="initialDate">new initialDate</param>
+        /// <param name="endDate">new endDate</param>
+        /// <returns>true if the post was edited successfully, otherwise false.</returns>
+        public bool EditPost(string email, int id, string title,
+            string description, string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime endDate)
+        {
+            // makes sure there is a post of the same id that the user owns.
+            var query = from posts in Context.Recruitments
+                        where posts.UserEmail == email && posts.Id == id
+                        select posts;
+            // update the post
+            if (query.Count() > 0)
+            {
+                var post = query.First();
+                post.Title = title;
+                post.Description = description;
+                post.Address = address;
+                post.Location = volunteerArea;
+                post.Job = jobType;
+                post.InitialDate = initialDate;
+                post.LastDate = endDate;
+
+                Context.Update(post);
+                Context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
