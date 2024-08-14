@@ -1,0 +1,6 @@
+﻿POST http://localhost:9000/logout
+Content-Type: application/json
+
+{
+  connectionKey: "MbbUyxBpQkAD1esJ",
+}

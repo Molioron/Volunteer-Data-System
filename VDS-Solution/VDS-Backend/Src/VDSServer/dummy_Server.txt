@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using VDS_Backend.Src.Models.VDS.Contexts;
 using WatsonWebserver;
 using WatsonWebserver.Core;
 using WatsonWebserver.Extensions.HostBuilderExtension;
@@ -18,10 +17,6 @@ namespace VDS_Backend.Src.VDSServer
         /// The server instance
         /// </summary>
         private static Webserver server;
-        /// <summary>
-        /// the server side of the interface that sends/receives data from the database
-        /// </summary>
-        private static ServerInterface serverInterface;
 
         /// <summary>
         /// Run the server program. The server will listen to specific request and
@@ -29,17 +24,14 @@ namespace VDS_Backend.Src.VDSServer
         /// </summary>
         /// <param name="hostname">name of the host. e.g: "localhost"</param>
         /// <param name="port">the port of the server</param>
-        public static async void Run(string hostname, int port)
+        public static void Run(string hostname, int port)
         {
             Console.WriteLine($"Running the server...\nYou may connect at \"http://{hostname}:{port}\".\n");
             
             server = new HostBuilder(hostname, port, false, DefaultRoute)
-                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/signup", SignupRoute)
-                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/login", LoginRoute)
-                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/logout", LogoutRoute)
+                .MapParameterRoute(WatsonWebserver.Core.HttpMethod.GET, "/greet", GreetRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/goodbye", GoodbyeRoute)
                 .Build();
-            await using VDSContext db = new VDSContextSQLite();
-            serverInterface = new ServerInterface(db);
             server.Start();
             OnStart();
 
@@ -50,39 +42,62 @@ namespace VDS_Backend.Src.VDSServer
 
         }
 
-        // default route
         static async Task DefaultRoute(HttpContextBase ctx) =>
             await ctx.Response.Send("Hello from default route!");
 
-        // route to sign up users
-        static async Task SignupRoute(HttpContextBase ctx)
+        /*
+         Dummy request
+         */
+        static async Task GreetRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[SIGNUP] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.\n");
-            string response = serverInterface.SignUp(ctx);
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            if (ctx.Request.Query.Elements.AllKeys.Contains("name"))
+            {
+                string? name = ctx.Request.Query.Elements["name"];
+                var response = new
+                {
+                    Greeting = $"Hello, {name}!",
+                    Timestamp = DateTime.UtcNow,
+                    Status = "Success"
+                };
+                string jsonResponse = JsonConvert.SerializeObject(response);
+                ctx.Response.StatusCode = 200;
+                ctx.Response.ContentType = "application/json";
+                await ctx.Response.Send(jsonResponse);
+            }
+            else
+            {
+                var errorResponse = new
+                {
+                    Error = "Bad Request",
+                    Message = "'name' parameter is missing"
+                };
+                string jsonErrorResponse = JsonConvert.SerializeObject(errorResponse);
+                ctx.Response.StatusCode = 400;
+                ctx.Response.ContentType = "application/json";
+                await ctx.Response.Send(jsonErrorResponse);
+            }
         }
-
-        // route to login as a user
-        static async Task LoginRoute(HttpContextBase ctx)
+        static async Task GoodbyeRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[LOGIN] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.\n");
-            string response = serverInterface.Login(ctx);
+            // Read the request body
+            string requestBody = ctx.Request.DataAsString;
+
+            // Deserialize the JSON to get the "name" parameter
+            var requestData = JsonConvert.DeserializeObject<RequestData>(requestBody);
+
+            // Create the response message
+            var responseMessage = new { message = $"Goodbye, {requestData.Name}!" };
+
+            // Serialize the response message to JSON
+            string jsonResponse = JsonConvert.SerializeObject(responseMessage);
+
             // Send the JSON response
             ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await ctx.Response.Send(jsonResponse);
         }
-
-        // route to logout as a user
-        static async Task LogoutRoute(HttpContextBase ctx)
+        private class RequestData
         {
-            Console.WriteLine($"[LOGOUT] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.Logout(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            public string Name { get; set; }
         }
 
         /// <summary>
@@ -110,10 +125,10 @@ namespace VDS_Backend.Src.VDSServer
             {
                 server.Stop();
                 server.Dispose();
-                serverInterface.ClearConnections();
                 OnStop();
                 Console.WriteLine("Server has been safely stopped.");
             }
         }
     }
 }
+

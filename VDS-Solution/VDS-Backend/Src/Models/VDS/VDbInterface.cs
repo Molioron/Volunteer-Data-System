@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VDS_Backend.Src.Models.VDS.Contexts;
+﻿using VDS_Backend.Src.Models.VDS.Contexts;
+using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Models.VDS.Tables;
 using VDS_Backend.Src.Utilities;
 
@@ -41,11 +37,12 @@ namespace VDS_Backend.Src.Models.VDS
         /// <returns>Success when signed up successfully, otherwise AlreadyExistsError</returns>
         public OperationStatus SignUp(string firstName, string lastName, string email, string password, string phoneNumber)
         {
-            if(handler.addUser(firstName, lastName, email, password, phoneNumber))
+            // post added successfully
+            if (handler.addUser(firstName, lastName, email, password, phoneNumber))
             {
-                return OperationStatus.Success;
+                return OperationStatus.SUCCESS;
             }
-            return OperationStatus.AlreadyExistsError;
+            return OperationStatus.SIGNUP_USER_EXISTS_ERROR;
         }
 
 
@@ -60,10 +57,33 @@ namespace VDS_Backend.Src.Models.VDS
             // user from db
             User? user = handler.GetUser(email);
             // user does not exist
-            if (user == null) { return OperationStatus.CredentialsError; }
+            if (user == null) { return OperationStatus.LOGIN_WRONG_EMAIL_PASSWORD_ERROR; }
             // password mismatch
-            if (!user.Password.Equals(password)) { return OperationStatus.CredentialsError; }
-            return OperationStatus.Success;
+            if (!user.Password.Equals(password)) { return OperationStatus.LOGIN_WRONG_EMAIL_PASSWORD_ERROR; }
+            return OperationStatus.SUCCESS;
+        }
+
+        /// <summary>
+        /// Creates a new recruitment post for a given user.
+        /// </summary>
+        /// <param name="email">the user who owns the post</param>
+        /// <param name="title">the title of the post</param>
+        /// <param name="description">the description of the post</param>
+        /// <param name="address">the address of the place of volunteering</param>
+        /// <param name="volunteerArea">the general location of the place of volunteering</param>
+        /// <param name="jobType">the general job/work in the place of volunteering</param>
+        /// <param name="initialDate">initial date of the duration of volunteering</param>
+        /// <param name="lastDate">last date of the duration of volunteering</param>
+        /// <returns>Sucess if the post was created successfully, otherwise ServerError.</returns>
+        public OperationStatus CreatePost(string email, string title, string description,
+            string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
+        {
+            if(handler.addRecruitmentPost(email,title, description, address, volunteerArea, jobType,
+                initialDate, lastDate))
+            {
+                return OperationStatus.SUCCESS; // post added successfully
+            }
+            return OperationStatus.FAILED_POST_CREATION_ERROR; // for some reason could not create post.
         }
     }
 }

@@ -1,0 +1,7 @@
+﻿GET http://localhost:9000/login
+Content-Type: application/json
+
+{
+  email: "johndoe@gmail.com",
+  password: "JohnDoe123"
+}

@@ -1,0 +1,10 @@
+﻿POST http://localhost:9000/signup
+Content-Type: application/json
+
+{
+  firstName: "Squidward",
+  lastName: "Tentacles",
+  email: "squidtent@gmail.com",
+  password: "GeniusSquid12345",
+  phone: "1231234567"
+}

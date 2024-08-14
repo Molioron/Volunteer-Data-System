@@ -28,6 +28,33 @@ const Auth = () => {
       phone: ''
     });
   };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch( 'http://localhost:9000/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ connectionKey: document.cookie.split('=')[1] })
+      });
+
+      console.log(JSON.stringify({ connectionKey: document.cookie.split('=')[1] })); // Log form data to the console
+      const result = await response.json();
+      handleResponse(result);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error222: ' + error.message);
+    }
+    document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setIsSignup(false);
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      phone: ''
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +63,8 @@ const Auth = () => {
 
     console.log('Form Data:', dataToSend); // Log form data to the console
 
-    const url = isSignup ? 'http://localhost:9000/signup' : 'http://localhost:9000/login'; // Update with backend URL
+    const url = isSignup ? 'http://localhost:9000/signup' : 'http://localhost:9000/login';
+    console.log('URL:', url); // Log URL to the console
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -54,13 +82,28 @@ const Auth = () => {
   };
   const handleResponse = (response) => {
       console.log(response);
+      try {
+        const operationStatus = JSON.parse(response.operationStatus);
+        if (operationStatus.Code === 0) {
+          alert(operationStatus.Message);
+          document.cookie = `connectionKey=${response.connectionKey}; path=/;`;
+        }else if(operationStatus.Code === 3 || operationStatus.Code === 2){
+          alert('Error: ' + operationStatus.Message);
+        } else {
+          alert('Failed: ' + operationStatus.Message);
+        }
+      } catch (error) {
+        console.error('Error parsing response:', error);
+        alert('Error: Invalid response format');
+      }
   };
 
   return (
     <div>
       <div>
-        <button onClick={() => handleFormSwitch(false)}>Login</button>
-        <button onClick={() => handleFormSwitch(true)}>Signup</button>
+        <button onClick={() => handleFormSwitch(false)}>Log In</button>
+        <button onClick={() => handleFormSwitch(true)}>Sign Up</button>
+        <button onClick={() => handleLogout()}>Log Out</button>
       </div>
       {isSignup ? (
         <div>
@@ -121,7 +164,7 @@ const Auth = () => {
             />
             </div>
             
-            <button type="submit">Register</button>
+            <button type="submit">Submit</button>
           </form>
         </div>
       ) : (
@@ -150,7 +193,7 @@ const Auth = () => {
             />
           </div>
             
-            <button type="submit">Login</button>
+            <button type="submit">Submit</button>
           </form>
         </div>
       )}

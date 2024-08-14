@@ -59,6 +59,18 @@ namespace VDS_Backend.Src.Models.VDS
         {
             return RemoveIfNotExists(Context.Users, email);
         }
+        /// <summary>
+        /// Creates a new recruitment post for the user.
+        /// </summary>
+        /// <param name="userEmail">the user who owns the post</param>
+        /// <param name="title">the title of the post</param>
+        /// <param name="description">the description of the post</param>
+        /// <param name="address">the address of the place of volunteering</param>
+        /// <param name="location">the general location of the place of volunteering</param>
+        /// <param name="job">the general job/work in the place of volunteering</param>
+        /// <param name="initialDate">initial date of the duration of volunteering</param>
+        /// <param name="lastDate">last date of the duration of volunteering</param>
+        /// <returns>true if the post was created successfully, otherwise false.</returns>
         public bool addRecruitmentPost(string userEmail, string title, string description, string address,
             Location location, Job job, DateTime initialDate, DateTime lastDate)
         {
@@ -67,9 +79,15 @@ namespace VDS_Backend.Src.Models.VDS
             Job = job, InitialDate = initialDate, LastDate = lastDate};
             return AddIfNotExists(Context.Recruitments, post) is not null;
         }
-        //public bool removeRecruitmentPost() {  }
-        //public bool addVolunteerPost() { }
-        //public bool removeVolunteerPost() { }
+        /// <summary>
+        /// Removes a recruitment post from the database based on it's id primary key.
+        /// </summary>
+        /// <param name="id">the id of the post.</param>
+        /// <returns>true if the post was removed successfully, otherwise false.</returns>
+        public bool removeRecruitmentPost(int id)
+        {
+            return RemoveIfNotExists(Context.Recruitments, id);
+        }
 
         /// <summary>
         /// Returns a user from the database from a given email
@@ -118,10 +136,11 @@ namespace VDS_Backend.Src.Models.VDS
         /// Removes an entity based on a given primary key.
         /// </summary>
         /// <typeparam name="T">type of entity.</typeparam>
+        /// <typeparam name="K">type of key of the entity to remove.</typeparam>
         /// <param name="dbSet">table the entity is in</param>
         /// <param name="key">the primary key of the entity</param>
         /// <returns>true if the entity was found and removed successfully, otherwise false</returns>
-        private bool RemoveIfNotExists<T>(DbSet<T> set, string key) where T : class, new()
+        private bool RemoveIfNotExists<T, K>(DbSet<T> set, K key) where T : class, new()
         {
             // Find the entity by key
             var entity = set.Find(key);
