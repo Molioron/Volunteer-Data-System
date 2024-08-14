@@ -1,9 +1,10 @@
-﻿POST http://localhost:9000/createpost
+﻿POST http://localhost:9000/editpost
 Content-Type: application/json
 
 {
-  "connectionkey": "g92spZfXH2x4JgzS",
-  "title": "john's recruitment",
+  "connectionkey": "WsyldYlt7lOpeRYV",
+  "id": 1,
+  "title": "john's new recruitment 8",
   "description": "looking for cooks",
   "address": "somewhere up north",
   "volunteerArea": "North",

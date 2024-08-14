@@ -38,6 +38,10 @@ namespace VDS_Backend.Src.VDSServer
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/login", LoginRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/logout", LogoutRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/createpost", CreatePostRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/getfilteredposts", GetFilteredPostsRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/getuserposts", GetUserPostsRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/editpost", EditPostRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/deletepost", DeletePostRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();
             serverInterface = new ServerInterface(db);
@@ -91,6 +95,50 @@ namespace VDS_Backend.Src.VDSServer
         {
             Console.WriteLine($"[CREATE POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
             string response = serverInterface.CreatePost(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(response);
+        }
+
+        // route to getting filtered posts
+        static async Task GetFilteredPostsRoute(HttpContextBase ctx)
+        {
+            Console.WriteLine($"[GET FILTERED POSTS] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = serverInterface.GetFilteredPosts(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(response);
+        }
+
+        // route to getting user posts
+        static async Task GetUserPostsRoute(HttpContextBase ctx)
+        {
+            Console.WriteLine($"[GET USER POSTS] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = serverInterface.GetUserPosts(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(response);
+        }
+
+        // route to edit a post
+        static async Task EditPostRoute(HttpContextBase ctx)
+        {
+            Console.WriteLine($"[EDIT POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = serverInterface.EditPost(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(response);
+        }
+
+        // route to delete post request
+        static async Task DeletePostRoute(HttpContextBase ctx)
+        {
+            Console.WriteLine($"[DELETE POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = serverInterface.DeletePost(ctx);
             Console.WriteLine();
             // Send the JSON response
             ctx.Response.ContentType = "application/json";

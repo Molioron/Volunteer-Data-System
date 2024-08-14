@@ -39,6 +39,11 @@ namespace VDS_Backend.Src.Utilities
         public static readonly OperationStatus FAILED_POST_CREATION_ERROR = new OperationStatus(StatusCode.ServerError, "Failed to create post.");
         public static readonly OperationStatus INVALID_CONNECTION_KEY_ERROR = new OperationStatus(StatusCode.CredentialsError, "Invalid connection key.");
         public static readonly OperationStatus ILLEGAL_DATES_ERROR = new OperationStatus(StatusCode.IllegalArgument, "Initial Date is after last date.");
+        public static readonly OperationStatus ILLEGAL_DATE_FILTER_TYPE_ERROR = new OperationStatus(StatusCode.IllegalArgument, "Date Filter Type is neither 'Contains' nor 'Intersects'.");
+        public static readonly OperationStatus FAILED_DB_PARSE_ERROR = new OperationStatus(StatusCode.ServerError, "Failed to retreive parsed data from database.");
+        public static readonly OperationStatus FAILED_GETTING_FILTERED_POSTS_ERROR = new OperationStatus(StatusCode.ServerError, "Something happened when trying to get filtered posts, my bad.");
+        public static readonly OperationStatus FAILED_GETTING_USER_POSTS_ERROR = new OperationStatus(StatusCode.ServerError, "Something happened when trying to get user posts, my bad.");
+        public static readonly OperationStatus POST_NOT_FOUND_ERROR = new OperationStatus(StatusCode.NotFoundError, "Couldn't find the specified post from the given connection key and post id.");
 
         public StatusCode Code { get; }
         public string Message { get; }

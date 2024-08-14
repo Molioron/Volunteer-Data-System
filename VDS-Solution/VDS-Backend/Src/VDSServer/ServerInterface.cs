@@ -194,6 +194,153 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
+        /// gets the filtered posts from the db.
+        /// may ignore filter options if they are empty or null.
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string GetFilteredPosts(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<GetFilteredPostsInputPayload>(body);
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            VDbHandler.PostInfo[] posts = [];
+            if (input != null)
+            {
+                var opRes = dbInterface.GetFilteredPosts(input.volunteerAreas, input.jobTypes,
+                    input.initialDate, input.endDate, input.dateFilterType);
+                status = opRes.Item1;
+                posts = opRes.Item2;
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+                posts = SafeSerializeObject(posts)
+            };
+            return SafeSerializeObject(response);
+        }
+
+        /// <summary>
+        /// gets the user posts from the db.
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string GetUserPosts(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<LogoutInputPayload>(body);
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            VDbHandler.PostInfo[] posts = [];
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    var opRes = dbInterface.GetUserPosts(email);
+                    status = opRes.Item1;
+                    posts = opRes.Item2;
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+                posts = SafeSerializeObject(posts)
+            };
+            return SafeSerializeObject(response);
+        }
+
+        /// <summary>
+        /// edit a post in db.
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string EditPost(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<EditPostInputPayload>(body);
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    status = dbInterface.EditPost(email, input.Id, input.Title, input.Description,
+                        input.Address, input.VolunteerArea, input.JobType, input.InitialDate, input.LastDate);
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+            };
+            return SafeSerializeObject(response);
+        }
+
+        /// <summary>
+        /// edit a post in db.
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string DeletePost(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<DeletePostInputPayload>(body);
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    status = dbInterface.DeletePost(email, input.Id);
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+            };
+            return SafeSerializeObject(response);
+        }
+
+        /// <summary>
         /// Clear all current connections of the server.
         /// </summary>
         public void ClearConnections()
