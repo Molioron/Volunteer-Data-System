@@ -78,11 +78,15 @@ namespace VDS_Backend.Src.Models.VDS
         public OperationStatus CreatePost(string email, string title, string description,
             string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
         {
-            if(handler.addRecruitmentPost(email,title, description, address, volunteerArea, jobType,
-                initialDate, lastDate))
+            try
             {
-                return OperationStatus.SUCCESS; // post added successfully
+                if (handler.addRecruitmentPost(email, title, description, address, volunteerArea, jobType,
+                initialDate, lastDate))
+                {
+                    return OperationStatus.SUCCESS; // post added successfully
+                }
             }
+            catch (ArgumentException ex) { return OperationStatus.ILLEGAL_DATES_ERROR; }
             return OperationStatus.FAILED_POST_CREATION_ERROR; // for some reason could not create post.
         }
     }

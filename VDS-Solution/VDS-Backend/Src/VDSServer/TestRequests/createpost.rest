@@ -1,0 +1,13 @@
+﻿POST http://localhost:9000/createpost
+Content-Type: application/json
+
+{
+  "connectionkey": "AzytZtcKlIZwjNcq2",
+  "title": "john's recruitment",
+  "description": "looking for cooks",
+  "address": "somewhere up north",
+  "volunteerArea": "North",
+  "jobType": "Cooking",
+  "initialDate": "2024-08-14T00:00:00Z",
+  "lastDate": "2024-07-14T23:59:59Z"
+}

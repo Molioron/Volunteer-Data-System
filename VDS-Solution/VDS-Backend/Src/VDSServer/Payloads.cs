@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS_Backend.Src.Models.VDS.DataTypes;
 
 namespace VDS_Backend.Src.VDSServer
 {
@@ -38,6 +39,21 @@ namespace VDS_Backend.Src.VDSServer
         private class LogoutInputPayload
         {
             public string ConnectionKey { get; set; }
+        }
+
+        /// <summary>
+        /// input received from create post request
+        /// </summary>
+        private class CreatePostInputPayload
+        {
+            public string ConnectionKey {  get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public string Address { get; set; }
+            public Location VolunteerArea { get; set; }
+            public Job JobType { get; set; }
+            public DateTime InitialDate { get; set; }
+            public DateTime LastDate { get; set; }
         }
     }
 }

@@ -37,6 +37,7 @@ namespace VDS_Backend.Src.VDSServer
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/signup", SignupRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/login", LoginRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/logout", LogoutRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/createpost", CreatePostRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();
             serverInterface = new ServerInterface(db);
@@ -79,6 +80,17 @@ namespace VDS_Backend.Src.VDSServer
         {
             Console.WriteLine($"[LOGOUT] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
             string response = serverInterface.Logout(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.Send(response);
+        }
+
+        // route to create a new post
+        static async Task CreatePostRoute(HttpContextBase ctx)
+        {
+            Console.WriteLine($"[CREATE POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = serverInterface.CreatePost(ctx);
             Console.WriteLine();
             // Send the JSON response
             ctx.Response.ContentType = "application/json";

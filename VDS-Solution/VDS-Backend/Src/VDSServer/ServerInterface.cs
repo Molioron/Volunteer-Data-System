@@ -152,29 +152,45 @@ namespace VDS_Backend.Src.VDSServer
         /// <summary>
         /// Create a new recruitment post based on the given arguments.
         /// </summary>
-        /// <param name="connectionKey">the connection. used to find the user who owns the post</param>
-        /// <param name="title">the title of the post</param>
-        /// <param name="description">the description of the post</param>
-        /// <param name="address">the address of the place of volunteering</param>
-        /// <param name="volunteerArea">the general location of the place of volunteering</param>
-        /// <param name="jobType">the general job/work in the place of volunteering</param>
-        /// <param name="initialDate">initial date of the duration of volunteering</param>
-        /// <param name="lastDate">last date of the duration of volunteering</param>
-        public void CreatePost(string connectionKey, string title, string description,
-            string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
+        /// <param name="ctx"> the http context</param>
+        /// <returns>success on success, otherwise unknown payload, invalid connection key or other errors</returns>
+        public string CreatePost(HttpContextBase ctx)
         {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<CreatePostInputPayload>(body);
+
+            // sanity check: input must be parsed correctly
+            if (input is null) {
+                var payloadErrResponse = new
+                {
+                    operationStatus = SafeSerializeObject(OperationStatus.UNKNOWN_PAYLOAD_ERROR),
+                };
+                return SafeSerializeObject(payloadErrResponse);
+            }
+
+
             // user email of the connection key
-            string? email = GetEmailFromKey(connectionKey);
+            string? email = GetEmailFromKey(input.ConnectionKey);
             if (email is null) // sanity check: connection key must be exist
             {
-                Console.WriteLine($"CredentialsError: invalid connection key \"{connectionKey}\".");
-                return;
+                // the response sent due invalid connection key
+                var errResponse = new
+                {
+                    operationStatus = SafeSerializeObject(OperationStatus.INVALID_CONNECTION_KEY_ERROR),
+                };
+                return SafeSerializeObject(errResponse);
             }
 
             // status result of creating post
-            OperationStatus status = dbInterface.CreatePost(email, title, description, address,
-                volunteerArea, jobType, initialDate, lastDate);
-            Console.WriteLine($"creating post for user \"{email}\", called \"{title}\" about \"{description}\". status: {status}");
+            OperationStatus status = dbInterface.CreatePost(email, input.Title, input.Description, input.Address,
+                input.VolunteerArea, input.JobType, input.InitialDate, input.LastDate);
+            // the response sent due to request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+            };
+            return SafeSerializeObject(response);
         }
 
         /// <summary>
