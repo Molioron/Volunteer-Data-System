@@ -84,10 +84,11 @@ const Auth = () => {
       console.log(response);
       try {
         const operationStatus = JSON.parse(response.operationStatus);
-        if (operationStatus.Code === 0) {
+        if (operationStatus.Code === 'Success') 
+          {
           alert(operationStatus.Message);
           document.cookie = `connectionKey=${response.connectionKey}; path=/;`;
-        }else if(operationStatus.Code === 3 || operationStatus.Code === 2){
+        }else if(operationStatus.Code === 'AlreadyExistsError' || operationStatus.Code === 'CredentialsError'){
           alert('Error: ' + operationStatus.Message);
         } else {
           alert('Failed: ' + operationStatus.Message);

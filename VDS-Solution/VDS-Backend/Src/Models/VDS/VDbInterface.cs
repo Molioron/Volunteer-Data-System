@@ -6,7 +6,7 @@ using VDS_Backend.Src.Utilities;
 namespace VDS_Backend.Src.Models.VDS
 {
     /// <summary>
-    /// The interface between the database and the server.
+    /// The interface between the database and the server interface.
     /// only implements the necessary interface methods: that is the methods that define the interface
     /// between the client and the server.
     /// </summary>
