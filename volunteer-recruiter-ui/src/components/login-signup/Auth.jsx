@@ -7,9 +7,10 @@ const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
-    surname: '',
+    lastName: '',
     email: '',
-    password: ''
+    password: '',
+    phone: ''
   });
 
   const handleInputChange = (e) => {
@@ -21,20 +22,49 @@ const Auth = () => {
     setIsSignup(flag);
     setFormData({
       firstName: '',
-      surname: '',
+      lastName: '',
       email: '',
-      password: ''
+      password: '',
+      phone: ''
+    });
+  };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch( 'http://localhost:9000/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ connectionKey: document.cookie.split('=')[1] })
+      });
+
+      console.log(JSON.stringify({ connectionKey: document.cookie.split('=')[1] })); // Log form data to the console
+      const result = await response.json();
+      handleResponse(result);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error222: ' + error.message);
+    }
+    document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    setIsSignup(false);
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      phone: ''
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToSend = { ...formData, operation: isSignup ? 'signup' : 'login' };
+    const dataToSend = { ...formData };
 
     console.log('Form Data:', dataToSend); // Log form data to the console
 
-    const url = isSignup ? 'http://localhost:5000/api/signup' : 'http://localhost:5000/api/login'; // Update with backend URL
+    const url = isSignup ? 'http://localhost:9000/signup' : 'http://localhost:9000/login';
+    console.log('URL:', url); // Log URL to the console
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -44,22 +74,37 @@ const Auth = () => {
         body: JSON.stringify(formData)
       });
       const result = await response.json();
-      if (response.ok) {
-        alert('Success: ' + JSON.stringify(result));
-      } else {
-        alert('Error: ' + result.message);
-      }
+      handleResponse(result);
     } catch (error) {
       console.error('Error:', error);
-      alert('Error: ' + error.message);
+      alert('Error222: ' + error.message);
     }
+  };
+  const handleResponse = (response) => {
+      console.log(response);
+      try {
+        const operationStatus = JSON.parse(response.operationStatus);
+        if (operationStatus.Code === 'Success') 
+          {
+          alert(operationStatus.Message);
+          document.cookie = `connectionKey=${response.connectionKey}; path=/;`;
+        }else if(operationStatus.Code === 'AlreadyExistsError' || operationStatus.Code === 'CredentialsError'){
+          alert('Error: ' + operationStatus.Message);
+        } else {
+          alert('Failed: ' + operationStatus.Message);
+        }
+      } catch (error) {
+        console.error('Error parsing response:', error);
+        alert('Error: Invalid response format');
+      }
   };
 
   return (
     <div>
       <div>
-        <button onClick={() => handleFormSwitch(false)}>Login</button>
-        <button onClick={() => handleFormSwitch(true)}>Signup</button>
+        <button onClick={() => handleFormSwitch(false)}>Log In</button>
+        <button onClick={() => handleFormSwitch(true)}>Sign Up</button>
+        <button onClick={() => handleLogout()}>Log Out</button>
       </div>
       {isSignup ? (
         <div>
@@ -78,10 +123,10 @@ const Auth = () => {
             
             <div className="form-group">
             <InputField 
-              label="Surname:" 
+              label="Last Name:" 
               type="text" 
-              name="surname" 
-              value={formData.surname} 
+              name="lastName" 
+              value={formData.lastName} 
               onChange={handleInputChange} 
               required 
             />
@@ -108,8 +153,19 @@ const Auth = () => {
               required 
             />
             </div>
+
+            <div className="form-group">
+            <InputField 
+              label="Phone:" 
+              type="phone" 
+              name="phone" 
+              value={formData.phone} 
+              onChange={handleInputChange} 
+              required 
+            />
+            </div>
             
-            <button type="submit">Register</button>
+            <button type="submit">Submit</button>
           </form>
         </div>
       ) : (
@@ -138,7 +194,7 @@ const Auth = () => {
             />
           </div>
             
-            <button type="submit">Login</button>
+            <button type="submit">Submit</button>
           </form>
         </div>
       )}

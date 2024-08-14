@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = VDS_Backend
-build_property.ProjectDir = D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\
+build_property.ProjectDir = C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
