@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 import InputField from './InputField';
 
 const Auth = () => {
+
+  const navigate = useNavigate();
 
   const [isSignup, setIsSignup] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,33 +23,6 @@ const Auth = () => {
 
   const handleFormSwitch = (flag) => {
     setIsSignup(flag);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      phone: ''
-    });
-  };
-  const handleLogout = async () => {
-    try {
-      const response = await fetch( 'http://localhost:9000/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ connectionKey: document.cookie.split('=')[1] })
-      });
-
-      console.log(JSON.stringify({ connectionKey: document.cookie.split('=')[1] })); // Log form data to the console
-      const result = await response.json();
-      handleResponse(result);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error222: ' + error.message);
-    }
-    document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setIsSignup(false);
     setFormData({
       firstName: '',
       lastName: '',
@@ -74,21 +50,21 @@ const Auth = () => {
         body: JSON.stringify(formData)
       });
       const result = await response.json();
-      handleResponse(result);
+      handleResponse(result, 'login-signup');
     } catch (error) {
       console.error('Error:', error);
       alert('Error222: ' + error.message);
     }
   };
-  const handleResponse = (response) => {
+  const handleResponse = (response, operation) => {
       console.log(response);
       try {
         const operationStatus = JSON.parse(response.operationStatus);
-        if (operationStatus.Code === 'Success') 
-          {
+        if (operationStatus.Code === 'Success') {
           alert(operationStatus.Message);
           document.cookie = `connectionKey=${response.connectionKey}; path=/;`;
-        }else if(operationStatus.Code === 'AlreadyExistsError' || operationStatus.Code === 'CredentialsError'){
+          navigate('/main');
+        } else if(operationStatus.Code === 'AlreadyExistsError' || operationStatus.Code === 'CredentialsError') {
           alert('Error: ' + operationStatus.Message);
         } else {
           alert('Failed: ' + operationStatus.Message);
@@ -104,7 +80,6 @@ const Auth = () => {
       <div>
         <button onClick={() => handleFormSwitch(false)}>Log In</button>
         <button onClick={() => handleFormSwitch(true)}>Sign Up</button>
-        <button onClick={() => handleLogout()}>Log Out</button>
       </div>
       {isSignup ? (
         <div>

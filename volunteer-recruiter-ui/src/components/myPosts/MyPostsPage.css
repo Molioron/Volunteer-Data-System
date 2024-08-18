@@ -1,0 +1,50 @@
+.my-posts-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    position: relative;
+    width: 80%; /* Set a similar width to the HomePage */
+    margin: 0 auto; /* Center the page horizontally */
+  }
+  
+  .logout-button {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .header-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .add-post-button {
+    margin-right: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .home-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .posts-container {
+    width: 1200px;
+    height: 500px; /* Adjust the height as needed */
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    margin-top: 20px; /* Adjust spacing between buttons and container */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
