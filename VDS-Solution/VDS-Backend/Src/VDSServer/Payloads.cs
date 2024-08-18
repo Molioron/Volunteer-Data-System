@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDS_Backend.Src.Models.VDS.DataTypes;
 
 namespace VDS_Backend.Src.VDSServer
 {
@@ -33,11 +34,63 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
-        /// input received from logout
+        /// input received from logout (and also get user posts)
         /// </summary>
         private class LogoutInputPayload
         {
             public string ConnectionKey { get; set; }
+        }
+
+        /// <summary>
+        /// input received from create post request
+        /// </summary>
+        private class CreatePostInputPayload
+        {
+            public string ConnectionKey {  get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public string Address { get; set; }
+            public Location VolunteerArea { get; set; }
+            public Job JobType { get; set; }
+            public DateTime InitialDate { get; set; }
+            public DateTime LastDate { get; set; }
+        }
+
+        /// <summary>
+        /// input received from filtered posts request
+        /// </summary>
+        private class GetFilteredPostsInputPayload
+        {
+            public Location[] volunteerAreas {  get; set; }
+            public Job[] jobTypes {  get; set; }
+            public DateTime? initialDate { get; set; }
+            public DateTime? endDate { get; set; }
+            public DateFilterType? dateFilterType { get; set; }
+        }
+
+        /// <summary>
+        /// input received from edit post request
+        /// </summary>
+        private class EditPostInputPayload
+        {
+            public string ConnectionKey { get; set; }
+            public int Id { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public string Address { get; set; }
+            public Location VolunteerArea { get; set; }
+            public Job JobType { get; set; }
+            public DateTime InitialDate { get; set; }
+            public DateTime LastDate { get; set; }
+        }
+
+        /// <summary>
+        /// input received from delete post request
+        /// </summary>
+        private class DeletePostInputPayload
+        {
+            public string ConnectionKey { get; set; }
+            public int Id { get; set; }
         }
     }
 }

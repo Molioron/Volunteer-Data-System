@@ -38,6 +38,7 @@ const Auth = () => {
     const dataToSend = { ...formData };
 
     console.log('Form Data:', dataToSend); // Log form data to the console
+    console.log((dataToSend.email).type);
 
     const url = isSignup ? 'http://localhost:9000/signup' : 'http://localhost:9000/login';
     console.log('URL:', url); // Log URL to the console
@@ -56,7 +57,7 @@ const Auth = () => {
       alert('Error222: ' + error.message);
     }
   };
-  const handleResponse = (response, operation) => {
+  const handleResponse = (response) => {
       console.log(response);
       try {
         const operationStatus = JSON.parse(response.operationStatus);

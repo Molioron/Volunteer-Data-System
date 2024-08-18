@@ -1,4 +1,5 @@
-﻿using VDS_Backend.Src.Models.VDS.Contexts;
+﻿using System.Net;
+using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Models.VDS.Tables;
 using VDS_Backend.Src.Utilities;
@@ -78,12 +79,109 @@ namespace VDS_Backend.Src.Models.VDS
         public OperationStatus CreatePost(string email, string title, string description,
             string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
         {
-            if(handler.addRecruitmentPost(email,title, description, address, volunteerArea, jobType,
-                initialDate, lastDate))
+            try
             {
-                return OperationStatus.SUCCESS; // post added successfully
+                if (handler.addRecruitmentPost(email, title, description, address, volunteerArea, jobType,
+                initialDate, lastDate))
+                {
+                    return OperationStatus.SUCCESS; // post added successfully
+                }
             }
+            catch (ArgumentException ex) { return OperationStatus.ILLEGAL_DATES_ERROR; }
             return OperationStatus.FAILED_POST_CREATION_ERROR; // for some reason could not create post.
+        }
+
+        /// <summary>
+        /// gets filtered posts from the db.
+        /// if any of the options are empty/null they will be ignored.
+        /// </summary>
+        /// <param name="volunteerAreas">allowed locations</param>
+        /// <param name="jobTypes">allowed jobs</param>
+        /// <param name="initialDate">initial date to look for</param>
+        /// <param name="endDate">last date to look for</param>
+        /// <param name="dateFilterType">type of date filtering: Contains or Intersects</param>
+        /// <returns>tuple (status, filtered posts)</returns>
+        public (OperationStatus, VDbHandler.PostInfo[]) GetFilteredPosts(Location[] volunteerAreas,
+            Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType)
+        {
+            try
+            {
+                var result = handler.GetFilteredPosts(volunteerAreas, jobTypes, initialDate, endDate, dateFilterType);
+                return (OperationStatus.SUCCESS, result);
+            }
+            catch (NotImplementedException ex)
+                { return (OperationStatus.ILLEGAL_DATE_FILTER_TYPE_ERROR, []); }
+            catch (ArgumentNullException ex)
+            { return (OperationStatus.FAILED_DB_PARSE_ERROR, []); }
+            catch (ArgumentException ex)
+            { return (OperationStatus.ILLEGAL_DATES_ERROR, []); }
+            catch (Exception ex) { Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return (OperationStatus.FAILED_GETTING_FILTERED_POSTS_ERROR, []);
+            }
+        }
+
+        /// <summary>
+        /// Get all posts made by a user
+        /// </summary>
+        /// <param name="email">email of user</param>
+        /// <returns>tuple (status, user posts)</returns>
+        public (OperationStatus, VDbHandler.PostInfo[]) GetUserPosts(string email)
+        {
+            try
+            {
+                var post = handler.GetUserPosts(email);
+                return (OperationStatus.SUCCESS, post);
+            }
+            catch(Exception ex)
+            {
+                return (OperationStatus.FAILED_GETTING_USER_POSTS_ERROR, []);
+            }
+        }
+
+        /// <summary>
+        /// Edit a post with new fields
+        /// </summary>
+        /// <param name="email">user owner email</param>
+        /// <param name="id">post id</param>
+        /// <param name="title">new title</param>
+        /// <param name="description">new description</param>
+        /// <param name="address">new address</param>
+        /// <param name="volunteerArea">new volunteerArea</param>
+        /// <param name="jobType">new jobType</param>
+        /// <param name="initialDate">new initial date</param>
+        /// <param name="endDate">new end date</param>
+        /// <returns>success or post not found error</returns>
+        public OperationStatus EditPost(string email, int id, string title,
+            string description, string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime endDate)
+        {
+            // post editted successfully
+            if (handler.EditPost(email, id, title, description, address, volunteerArea, jobType,
+                initialDate, endDate))
+            {
+                return OperationStatus.SUCCESS;
+            }
+            return OperationStatus.POST_NOT_FOUND_ERROR;
+        }
+
+        /// <summary>
+        /// Delete a post with id, makes sure email matches the user owns the post
+        /// </summary>
+        /// <param name="email">user email who owns the post</param>
+        /// <param name="id">post id</param>
+        /// <returns>success, or post not found</returns>
+        public OperationStatus DeletePost(string email, int id)
+        {
+            // post edited successfully
+            if (handler.FindPostWithOwner(email, id))
+            {
+                // attempt deletion only if post with owner
+                if (handler.removeRecruitmentPost(id))
+                {
+                    return OperationStatus.SUCCESS;
+                }
+            }
+            return OperationStatus.POST_NOT_FOUND_ERROR;
         }
     }
 }

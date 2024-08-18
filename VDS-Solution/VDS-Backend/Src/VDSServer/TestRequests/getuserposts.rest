@@ -1,0 +1,7 @@
+﻿POST http://localhost:9000/deletepost
+Content-Type: application/json
+
+{
+  "connectionKey": "vkrDmCc5HMr39GXX",
+  "id": 7
+}

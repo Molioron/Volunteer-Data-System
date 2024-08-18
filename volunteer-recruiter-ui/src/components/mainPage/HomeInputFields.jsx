@@ -7,9 +7,9 @@ const HomeInputFields = ({ area, jobTitle, initialDate, endDate, dateType, onCha
         <label>Area:</label>
         <select name="area" value={area} onChange={(e) => onChange(e)}>
           <option value="">Select Area</option>
-          <option value="area1">Area 1</option>
-          <option value="area2">Area 2</option>
-          <option value="area3">Area 3</option>
+          <option value="North">North</option>
+          <option value="South">South</option>
+          <option value="Central">Central</option>
         </select>
       </div>
 
@@ -17,9 +17,10 @@ const HomeInputFields = ({ area, jobTitle, initialDate, endDate, dateType, onCha
         <label>Job Title:</label>
         <select name="jobTitle" value={jobTitle} onChange={(e) => onChange(e)}>
           <option value="">Select Job Title</option>
-          <option value="developer">Developer</option>
-          <option value="designer">Designer</option>
-          <option value="manager">Manager</option>
+          <option value="Agriculture">Agriculture</option>
+          <option value="Cooking">Cooking</option>
+          <option value="Transportation">Transportation</option>
+          <option value="AnimalCare">Animal Care</option>
         </select>
       </div>
 
@@ -47,8 +48,8 @@ const HomeInputFields = ({ area, jobTitle, initialDate, endDate, dateType, onCha
         <label>Date Type:</label>
         <select name="dateType" value={dateType} onChange={(e) => onChange(e)}>
           <option value="">Select Date Type</option>
-          <option value="specific">Specific</option>
-          <option value="range">Range</option>
+          <option value="Contains">Contains</option>
+          <option value="Intersects">Intersects</option>
         </select>
       </div>
     </div>

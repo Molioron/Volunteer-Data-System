@@ -97,6 +97,18 @@ namespace VDS_Backend.Src.Models.VDS
         }
 
         /// <summary>
+        /// determines if a post exists with the given id and email of owner
+        /// </summary>
+        /// <param name="email">user owner email</param>
+        /// <param name="id">post id</param>
+        /// <returns>true if it exists, otherwise false.</returns>
+        public bool FindPostWithOwner(string email, int id)
+        {
+            var post = Context.Recruitments.SingleOrDefault(posts => posts.UserEmail == email && posts.Id == id);
+            return post is not null;
+        }
+
+        /// <summary>
         /// Return all posts that have one of the specified volunteerAreas,
         /// one of the specified jobs, and either dates range is contained in the specified range
         /// or intersects with, dependent on the DateFilterType.
@@ -111,7 +123,8 @@ namespace VDS_Backend.Src.Models.VDS
         /// <returns>An array of posts that satisfy the specified filter</returns>
         /// <exception cref="NotImplementedException">if dateFilterType is neither Contains or Intersects</exception>
         /// <exception cref="ArgumentException">if initialDate is after endDate</exception>
-        public RecruitmentPost[] GetFilteredPosts(Location[] volunteerAreas,
+        /// /// <exception cref="ArgumentNullException">failed to parse data from db</exception>
+        public PostInfo[] GetFilteredPosts(Location[] volunteerAreas,
             Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType)
         {
             if (initialDate > endDate) // sanity check: initial date must not be after end date
@@ -120,12 +133,12 @@ namespace VDS_Backend.Src.Models.VDS
             // only posts
             var query = Context.Recruitments.Include(r => r.User).AsQueryable();
 
-            // filter by location and job type
+            // filter by location
             if (volunteerAreas.Length > 0) // filter only when necessary
             {
                 query = query.Where(posts => volunteerAreas.Contains(posts.Location));
             }
-
+            // filter by job type
             if (jobTypes.Length > 0) // filter only when necessary
             {
                 query = query.Where(posts => jobTypes.Contains(posts.Job));
@@ -154,8 +167,20 @@ namespace VDS_Backend.Src.Models.VDS
                         throw new NotImplementedException("Unknown DateFilterType value.");
                 }
             }
-
-            return query.ToArray();
+            // result of the query
+            var result = query.Select(posts => new PostInfo
+            {
+                Id = posts.Id,
+                Title = posts.Title,
+                Description = posts.Description,
+                Address = posts.Address,
+                Location = posts.Location,
+                Job = posts.Job,
+                InitialDate = posts.InitialDate,
+                LastDate = posts.LastDate,
+                PhoneNumber = posts.User.PhoneNumber
+            }).ToArray();
+            return result;
         }
 
         /// <summary>
@@ -163,11 +188,22 @@ namespace VDS_Backend.Src.Models.VDS
         /// </summary>
         /// <param name="email">email of the user who owns the posts.</param>
         /// <returns>all posts currently saved, and made by a specific user.</returns>
-        public RecruitmentPost[] GetUserPosts(string email)
+        public PostInfo[] GetUserPosts(string email)
         {
             var query = from posts in Context.Recruitments.Include(r => r.User)
                         where posts.User.Email == email
-                        select posts;
+                        select new PostInfo
+                        {
+                            Id = posts.Id,
+                            Title = posts.Title,
+                            Description = posts.Description,
+                            Address = posts.Address,
+                            Location = posts.Location,
+                            Job = posts.Job,
+                            InitialDate = posts.InitialDate,
+                            LastDate = posts.LastDate,
+                            PhoneNumber = posts.User.PhoneNumber
+                        };
             return query.ToArray();
         }
 
@@ -187,14 +223,13 @@ namespace VDS_Backend.Src.Models.VDS
         public bool EditPost(string email, int id, string title,
             string description, string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime endDate)
         {
-            // makes sure there is a post of the same id that the user owns.
-            var query = from posts in Context.Recruitments
-                        where posts.UserEmail == email && posts.Id == id
-                        select posts;
-            // update the post
-            if (query.Count() > 0)
+            try
             {
-                var post = query.First();
+                // makes sure there is a post of the same id that the user owns.
+                var post = Context.Recruitments.SingleOrDefault(posts => posts.UserEmail == email && posts.Id == id);
+                
+                if( post == null) { return false; }
+                // update the post
                 post.Title = title;
                 post.Description = description;
                 post.Address = address;
@@ -203,11 +238,10 @@ namespace VDS_Backend.Src.Models.VDS
                 post.InitialDate = initialDate;
                 post.LastDate = endDate;
 
-                Context.Update(post);
                 Context.SaveChanges();
                 return true;
             }
-            return false;
+            catch (Exception ex) { return false; }
         }
 
         /// <summary>
@@ -236,7 +270,7 @@ namespace VDS_Backend.Src.Models.VDS
         /// <param name="dbSet">the table to add to</param>
         /// <param name="entity">the entity to add</param>
         /// <returns>The entry to this entity, or null if the entry exists already.</returns>
-        private EntityEntry<T>? AddIfNotExists<T>(DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class
+        private EntityEntry<T>? AddIfNotExists<T>(DbSet<T> dbSet, T entity) where T : class
         {
             var keyProperties = Context.Model.FindEntityType(typeof(T)).FindPrimaryKey().Properties;
 
@@ -274,6 +308,22 @@ namespace VDS_Backend.Src.Models.VDS
             set.Remove(entity);
             Context.SaveChanges();
             return true; // Entity existed and was removed
+        }
+
+        /// <summary>
+        /// Info about the post that is returned
+        /// </summary>
+        public class PostInfo
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public string Address { get; set; }
+            public Location Location { get; set; }
+            public Job Job { get; set; }
+            public DateTime InitialDate { get; set; }
+            public DateTime LastDate { get; set; }
+            public string PhoneNumber { get; set; }
         }
     }
 

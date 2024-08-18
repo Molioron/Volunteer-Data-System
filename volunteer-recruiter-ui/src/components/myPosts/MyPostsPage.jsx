@@ -7,18 +7,19 @@ const MyPostsPage = () => {
 
   const handleLogout = async () => {
     try {
+      const connectionKey = document.cookie.split('=')[1];
       const response = await fetch('http://localhost:9000/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ connectionKey: document.cookie.split('=')[1] }),
+        body: JSON.stringify({ connectionKey: connectionKey }),
       });
 
-      console.log(JSON.stringify({ connectionKey: document.cookie.split('=')[1] })); // Log form data to the console
       const result = await response.json();
-      if (result.operationStatus.Code === 'Success') {
-        alert(result.operationStatus.Message);
+      const operationStatus = JSON.parse(result.operationStatus);
+      if (operationStatus.Code === 'Success') {
+        alert(operationStatus.Message);
         document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         navigate('/');
       } else {
