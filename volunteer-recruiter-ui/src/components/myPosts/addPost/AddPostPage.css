@@ -1,0 +1,97 @@
+.add-post-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    width: 95%;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 60px auto 0;
+}
+
+.add-post-input-fields {
+    /* display: flex;
+    flex-direction: column;
+    gap: 15px; */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.add-post-form-group {
+    /* display: flex;
+    flex-direction: column;
+    margin-bottom: 15px; */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.add-post-form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.add-post-form-group input, .add-post-form-group select, .add-post-form-group textarea {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+textarea {
+    resize: vertical; /* Allows the user to resize the textarea vertically */
+}
+
+.add-post-action-button {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-post-action-button button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-post-action-button button:hover {
+    background-color: #45a049;
+}
+
+.logout-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.logout-button:hover {
+    background-color: #e53935;
+}
+
+.add-post-form-group textarea {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+    resize: vertical;
+    height: 200px; /* Adjust the height as needed */
+    overflow-y: auto; /* Ensure scrolling if content exceeds height */
+    line-height: 1.5; /* Adjust line height for better readability */
+    vertical-align: top; /* Align text from the top */
+}
