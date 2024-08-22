@@ -5,17 +5,12 @@ import './HomePage.css';
 
 const HomePage = () => {
   const [formData, setFormData] = useState({
-    Location: '',
-    Job: '',
+    volunteerAreas: '',
+    jobTypes: '',
     initialDate: '',
-    endDate: '',
-    DateFilterType: '',
+    lastDate: '',
+    dateFilterType: '',
   });
-
-  // const [cookieData, setCookieData] = useState({
-  //   connectionKey: ''
-  // });
-
 
   const navigate = useNavigate();
 
@@ -33,10 +28,11 @@ const HomePage = () => {
         },
         body: JSON.stringify(formData),
       });
-
+      
+      console.log(JSON.stringify(formData));
       const result = await response.json();
-      console.log(result);
       const operationStatus = JSON.parse(result.operationStatus);
+      console.log(result);
       if (operationStatus.Code === 'Success') {
         alert(operationStatus.Message);
       } else if (operationStatus.Code === 'ServerError') {
@@ -52,61 +48,59 @@ const HomePage = () => {
 
   const handleLogout = async () => {
     try {
-
       const connectionKey = document.cookie.split('=')[1];
-      console.log({connectionKey: connectionKey});
-
       const response = await fetch('http://localhost:9000/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify( {connectionKey: connectionKey} ),
+        body: JSON.stringify({ connectionKey: connectionKey }),
       });
 
       const result = await response.json();
-      console.log(result);
-
       const operationStatus = JSON.parse(result.operationStatus);
 
-      console.log(operationStatus.Code);
       if (operationStatus.Code === "Success") {
         alert(operationStatus.Message);
         document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         navigate('/');
       } else {
-        console.error('Error1:', result.operationStatus.Message);
-        alert('Error1: ' + result.operationStatus.Message);
+        alert('Error: ' + result.operationStatus.Message);
       }
     } catch (error) {
-      console.error('Error2:', error);
-      alert('Error2: ' + error.message);
+      console.error('Error:', error);
+      alert('Error: ' + error.message);
     }
   };
 
   const handleMyPosts = () => {
-    navigate('/my-posts'); // This will be the route to the new page you'll create later
+    navigate('/my-posts');
   };
 
   return (
     <div className="home-page">
-      <div className="input-fields-container">
       <button className="logout-button" onClick={handleLogout}>Logout</button>
+      <div className="input-fields-container">
         <HomeInputFields
-          Location={formData.Location}
-          Job={formData.Job}
+          area={formData.volunteerAreas}
+          jobTitle={formData.jobTypes}
           initialDate={formData.initialDate}
-          endDate={formData.endDate}
-          DateFilterType={formData.DateFilterType}
+          endDate={formData.lastDate}
+          dateType={formData.dateFilterType}
           onChange={handleInputChange}
         />
+        <div className="action-buttons">
+          <button onClick={handleSearch}>Search</button>
+          <button onClick={handleMyPosts}>My Posts</button>
+        </div>
       </div>
       <div className="content-container">
-        {/* This is the big rectangle container */}
-      </div>
-      <div className="action-buttons">
-        <button onClick={handleSearch}>Search</button>
-        <button onClick={handleMyPosts}>My Posts</button>
+        {/* Here you will render the posts */}
+        <h2>Posts</h2>
+        {/* Example placeholder content */}
+        <div className="post-item">
+          <p>This is where the posts will be displayed.</p>
+        </div>
       </div>
     </div>
   );

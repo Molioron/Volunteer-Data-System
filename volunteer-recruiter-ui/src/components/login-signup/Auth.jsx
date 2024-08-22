@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
-import InputField from './InputField';
+import InputField from './AuthInputField';
 
 const Auth = () => {
 
@@ -51,7 +51,7 @@ const Auth = () => {
         body: JSON.stringify(formData)
       });
       const result = await response.json();
-      handleResponse(result, 'login-signup');
+      handleResponse(result);
     } catch (error) {
       console.error('Error:', error);
       alert('Error222: ' + error.message);
@@ -77,100 +77,105 @@ const Auth = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="auth-page">
+      <div className="auth-toggle-buttons">
         <button onClick={() => handleFormSwitch(false)}>Log In</button>
         <button onClick={() => handleFormSwitch(true)}>Sign Up</button>
       </div>
+
       {isSignup ? (
         <div>
           <h2>Signup</h2>
           <form onSubmit={handleSubmit}>
-          <div className="form-group">
-          <InputField 
-              label="First Name:" 
-              type="text" 
-              name="firstName" 
-              value={formData.firstName} 
-              onChange={handleInputChange} 
-              required 
-            />
-          </div>
-            
-            <div className="form-group">
-            <InputField 
-              label="Last Name:" 
-              type="text" 
-              name="lastName" 
-              value={formData.lastName} 
-              onChange={handleInputChange} 
-              required 
-            />
-            </div>
-            
-            <div className="form-group">
-            <InputField 
-              label="Email:" 
-              type="email" 
-              name="email" 
-              value={formData.email} 
-              onChange={handleInputChange} 
-              required 
-            />
-            </div>
-            
-            <div className="form-group">
-            <InputField 
-              label="Password:" 
-              type="password" 
-              name="password" 
-              value={formData.password} 
-              onChange={handleInputChange} 
-              required 
-            />
+            <div className="auth-form-group">
+              <InputField
+                label="First Name:"
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                required
+              />
             </div>
 
-            <div className="form-group">
-            <InputField 
-              label="Phone:" 
-              type="phone" 
-              name="phone" 
-              value={formData.phone} 
-              onChange={handleInputChange} 
-              required 
-            />
+            <div className="auth-form-group">
+              <InputField
+                label="Last Name:"
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                required
+              />
             </div>
-            
-            <button type="submit">Submit</button>
+
+            <div className="auth-form-group">
+              <InputField
+                label="Email:"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="auth-form-group">
+              <InputField
+                label="Password:"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="auth-form-group">
+              <InputField
+                label="Phone:"
+                type="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="auth-action-button">
+              <button type="submit">Submit</button>
+            </div>
           </form>
         </div>
       ) : (
         <div>
           <h2>Login</h2>
           <form onSubmit={handleSubmit}>
-          <div className="form-group">
-          <InputField 
-              label="Email:" 
-              type="email" 
-              name="email" 
-              value={formData.email} 
-              onChange={handleInputChange} 
-              required 
-            />
-          </div>
-            
-          <div className="form-group">
-          <InputField 
-              label="Password:" 
-              type="password" 
-              name="password" 
-              value={formData.password} 
-              onChange={handleInputChange} 
-              required 
-            />
-          </div>
-            
-            <button type="submit">Submit</button>
+            <div className="auth-form-group">
+              <InputField
+                label="Email:"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="auth-form-group">
+              <InputField
+                label="Password:"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="auth-action-button">
+              <button type="submit">Submit</button>
+            </div>
           </form>
         </div>
       )}

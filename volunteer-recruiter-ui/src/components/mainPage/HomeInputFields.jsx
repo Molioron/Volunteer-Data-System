@@ -1,11 +1,11 @@
 import React from 'react';
-
-const HomeInputFields = ({ area, jobTitle, initialDate, endDate, dateType, onChange }) => {
+import './HomePage.css';
+const HomeInputFields = ({ volunteerAreas, jobTypes, initialDate, lastDate, dateFilterType, onChange }) => {
   return (
-    <div className="input-fields">
+    <div className="home-input-fields">
       <div className="form-group">
         <label>Area:</label>
-        <select name="area" value={area} onChange={(e) => onChange(e)}>
+        <select name="volunteerAreas" value={volunteerAreas} onChange={(e) => onChange(e)}>
           <option value="">Select Area</option>
           <option value="North">North</option>
           <option value="South">South</option>
@@ -15,7 +15,7 @@ const HomeInputFields = ({ area, jobTitle, initialDate, endDate, dateType, onCha
 
       <div className="form-group">
         <label>Job Title:</label>
-        <select name="jobTitle" value={jobTitle} onChange={(e) => onChange(e)}>
+        <select name="jobTypes" value={jobTypes} onChange={(e) => onChange(e)}>
           <option value="">Select Job Title</option>
           <option value="Agriculture">Agriculture</option>
           <option value="Cooking">Cooking</option>
@@ -38,15 +38,15 @@ const HomeInputFields = ({ area, jobTitle, initialDate, endDate, dateType, onCha
         <label>End Date:</label>
         <input
           type="date"
-          name="endDate"
-          value={endDate}
+          name="lastDate"
+          value={lastDate}
           onChange={(e) => onChange(e)}
         />
       </div>
 
       <div className="form-group">
         <label>Date Type:</label>
-        <select name="dateType" value={dateType} onChange={(e) => onChange(e)}>
+        <select name="dateFilterType" value={dateFilterType} onChange={(e) => onChange(e)}>
           <option value="">Select Date Type</option>
           <option value="Contains">Contains</option>
           <option value="Intersects">Intersects</option>

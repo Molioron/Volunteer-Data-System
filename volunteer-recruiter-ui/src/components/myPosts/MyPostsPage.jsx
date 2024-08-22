@@ -32,8 +32,7 @@ const MyPostsPage = () => {
   };
 
   const handleAddPost = () => {
-    // Logic for adding a post (can be implemented later)
-    alert('Add Post functionality coming soon!');
+    navigate('/add-post');
   };
 
   const handleHome = () => {
@@ -43,12 +42,12 @@ const MyPostsPage = () => {
   return (
     <div className="my-posts-page">
       <button className="logout-button" onClick={handleLogout}>Logout</button>
-      <div className="header-buttons">
-        <button className="add-post-button" onClick={handleAddPost}>Add Post</button>
-        <button className="home-button" onClick={handleHome}>Home</button>
-      </div>
       <div className="posts-container">
         {/* Posts will be displayed here */}
+      </div>
+      <div className="action-buttons">
+        <button onClick={handleAddPost}>Add Post</button>
+        <button onClick={handleHome}>Home</button>
       </div>
     </div>
   );
