@@ -90,4 +90,21 @@
     background-color: #e53935;
 }
 
+
+.post-item {
+    background-color: #f0f0f0; /* Light background for each post */
+    border: 1px solid #ccc; /* Border around each post */
+    padding: 15px;
+    margin-bottom: 15px; /* Space between posts */
+    border-radius: 5px;
+}
+
+.post-item h3 {
+    margin: 0 0 10px 0;
+}
+
+.post-item p {
+    margin: 5px 0;
+}
+
   

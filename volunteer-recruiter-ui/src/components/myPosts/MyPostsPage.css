@@ -3,10 +3,8 @@
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 90vh; /* Ensure the page takes up the full height */
-  justify-content: space-between; /* Space out the content evenly */
-  margin: 20px auto 0; 
-
+  min-height: 90vh;
+  margin: 20px auto 0;
 }
 
 .logout-button {
@@ -32,13 +30,27 @@
   border-radius: 8px;
   background-color: #f9f9f9;
   margin-top: 20px;
-  margin-bottom: 20px;
   padding: 20px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 400px; /* Set a minimum height for the posts container */
+  flex-direction: column; /* Ensure posts are displayed vertically */
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 550px; /* Set a maximum height for the posts container */
+}
+
+.post-item {
+  background-color: #f0f0f0; /* Light background for each post */
+  border: 1px solid #ccc; /* Border around each post */
+  padding: 15px;
+  margin-bottom: 15px; /* Space between posts */
+  border-radius: 5px;
+}
+
+.post-item h3 {
+  margin: 0 0 10px 0;
+}
+
+.post-item p {
+  margin: 5px 0;
 }
 
 .action-buttons {
@@ -59,4 +71,47 @@
 
 .action-buttons button:hover {
   background-color: #45a049;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #e53935;
+}
+
+
+.edit-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #45a049;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #e53935;
 }

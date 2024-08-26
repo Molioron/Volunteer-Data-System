@@ -35,13 +35,7 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToSend = { ...formData };
-
-    console.log('Form Data:', dataToSend); // Log form data to the console
-    console.log((dataToSend.email).type);
-
     const url = isSignup ? 'http://localhost:9000/signup' : 'http://localhost:9000/login';
-    console.log('URL:', url); // Log URL to the console
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -54,26 +48,50 @@ const Auth = () => {
       handleResponse(result);
     } catch (error) {
       console.error('Error:', error);
-      alert('Error222: ' + error.message);
+      alert('Error: ' + error.message);
     }
   };
-  const handleResponse = (response) => {
-      console.log(response);
-      try {
-        const operationStatus = JSON.parse(response.operationStatus);
-        if (operationStatus.Code === 'Success') {
-          alert(operationStatus.Message);
-          document.cookie = `connectionKey=${response.connectionKey}; path=/;`;
-          navigate('/main');
-        } else if(operationStatus.Code === 'AlreadyExistsError' || operationStatus.Code === 'CredentialsError') {
-          alert('Error: ' + operationStatus.Message);
+
+  const handleResponse = async (response) => {
+    try {
+      const operationStatus = JSON.parse(response.operationStatus);
+      if (operationStatus.Code === 'Success') {
+        alert(operationStatus.Message);
+        document.cookie = `connectionKey=${response.connectionKey}; path=/;`;
+
+        // Fetch all posts after successful login/signup
+        const allPostsResponse = await fetch('http://localhost:9000/getfilteredposts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            volunteerAreas: [],
+            jobTypes: [],
+            initialDate: '',
+            lastDate: '',
+            dateFilterType: '',
+          }) // Send an empty object to fetch all posts without filters
+        });
+
+        const allPostsResult = await allPostsResponse.json();
+        const postsOperationStatus = JSON.parse(allPostsResult.operationStatus);
+
+        if (postsOperationStatus.Code === 'Success') {
+          const allPosts = JSON.parse(allPostsResult.posts);
+          navigate('/main', { state: { posts: allPosts } });
         } else {
-          alert('Failed: ' + operationStatus.Message);
+          alert('Failed to fetch posts');
         }
-      } catch (error) {
-        console.error('Error parsing response:', error);
-        alert('Error: Invalid response format');
+      } else if(operationStatus.Code === 'AlreadyExistsError' || operationStatus.Code === 'CredentialsError') {
+        alert('Error: ' + operationStatus.Message);
+      } else {
+        alert('Failed: ' + operationStatus.Message);
       }
+    } catch (error) {
+      console.error('Error parsing response:', error);
+      alert('Error: Invalid response format');
+    }
   };
 
   return (

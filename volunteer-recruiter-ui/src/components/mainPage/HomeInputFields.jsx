@@ -1,27 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { MultiSelect } from 'react-multi-select-component';
 import './HomePage.css';
-const HomeInputFields = ({ volunteerAreas, jobTypes, initialDate, lastDate, dateFilterType, onChange }) => {
+
+const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area, jobTitle }) => {
+
+  const areas = [
+    { label: "North", value: "North" },
+    { label: "South", value: "South" },
+    { label: "Central", value: "Central" },
+  ];
+
+  const jobs = [
+    { label: "Agriculture", value: "Agriculture" },
+    { label: "Cooking", value: "Cooking" },
+    { label: "Transportation", value: "Transportation" },
+    { label: "AnimalCare", value: "AnimalCare" }
+  ];
+
+  // Initialize selectedArea based on the area prop
+  const [selectedArea, setSelectedArea] = useState(area.map(a => ({ label: a, value: a })));
+  const [selectedJob, setSelectedJob] = useState(jobTitle.map(j => ({ label: j, value: j })));
+
+  useEffect(() => {
+    // Extract the values only and update the parent component's state
+    onChange({ target: { name: 'volunteerAreas', value: selectedArea.map(area => area.value) } });
+  }, [selectedArea]);
+
+  useEffect(() => {
+    // Extract the values only and update the parent component's state
+    onChange({ target: { name: 'jobTypes', value: selectedJob.map(job => job.value) } });
+  }, [selectedJob]);
+
   return (
     <div className="home-input-fields">
       <div className="form-group">
         <label>Area:</label>
-        <select name="volunteerAreas" value={volunteerAreas} onChange={(e) => onChange(e)}>
-          <option value="">Select Area</option>
-          <option value="North">North</option>
-          <option value="South">South</option>
-          <option value="Central">Central</option>
-        </select>
+        <MultiSelect 
+          options={areas} 
+          value={selectedArea} 
+          onChange={setSelectedArea} 
+          labelledBy="Select Area"
+        />
       </div>
 
       <div className="form-group">
         <label>Job Title:</label>
-        <select name="jobTypes" value={jobTypes} onChange={(e) => onChange(e)}>
-          <option value="">Select Job Title</option>
-          <option value="Agriculture">Agriculture</option>
-          <option value="Cooking">Cooking</option>
-          <option value="Transportation">Transportation</option>
-          <option value="AnimalCare">Animal Care</option>
-        </select>
+        <MultiSelect 
+          options={jobs} 
+          value={selectedJob} 
+          onChange={setSelectedJob} 
+          labelledBy="Select Job Title"
+        />
       </div>
 
       <div className="form-group">

@@ -1,43 +1,45 @@
 import React from "react";
 
-const AddPostInputField = ({ volunteerArea, jobType, initialDate, lastDate, onChange}) => {
-    return (
-      <div className="add-post-input-fields">
-
+const AddPostInputField = ({ title, description, address, volunteerArea, jobType, initialDate, lastDate, onChange }) => {
+  return (
+    <div className="add-post-input-fields">
       <div className="add-post-form-group">
         <label>Title:</label>
         <input
-        type="text"
-        name="title"
-        onChange={onChange}
-        required
+          type="text"
+          name="title"
+          value={title}
+          onChange={onChange}
+          required
         />
       </div>
 
       <div className="add-post-form-group">
-      <label>Description:</label>
-      <textarea
-        name="description"
-        onChange={onChange}
-        required
-        rows="10" // Increase the number of rows
-        style={{ height: '230px' }} // Set the height to 300px
+        <label>Description:</label>
+        <textarea
+          name="description"
+          value={description}
+          onChange={onChange}
+          required
+          rows="10"
+          style={{ height: '230px' }}
         />
       </div>
 
       <div className="add-post-form-group">
         <label>Address:</label>
         <input
-        type="text"
-        name="address"
-        onChange={onChange}
-        required
+          type="text"
+          name="address"
+          value={address}
+          onChange={onChange}
+          required
         />
       </div>
 
       <div className="add-post-form-group">
         <label>Area:</label>
-        <select name="volunteerArea" value={volunteerArea} onChange={(e) => onChange(e)}>
+        <select name="volunteerArea" value={volunteerArea} onChange={onChange}>
           <option value="">Select Area</option>
           <option value="North">North</option>
           <option value="South">South</option>
@@ -47,7 +49,7 @@ const AddPostInputField = ({ volunteerArea, jobType, initialDate, lastDate, onCh
 
       <div className="add-post-form-group">
         <label>Job Type:</label>
-        <select name="jobType" value={jobType} onChange={(e) => onChange(e)}>
+        <select name="jobType" value={jobType} onChange={onChange}>
           <option value="">Select Job Type</option>
           <option value="Agriculture">Agriculture</option>
           <option value="Cooking">Cooking</option>
@@ -62,7 +64,7 @@ const AddPostInputField = ({ volunteerArea, jobType, initialDate, lastDate, onCh
           type="date"
           name="initialDate"
           value={initialDate}
-          onChange={(e) => onChange(e)}
+          onChange={onChange}
         />
       </div>
 
@@ -72,12 +74,11 @@ const AddPostInputField = ({ volunteerArea, jobType, initialDate, lastDate, onCh
           type="date"
           name="lastDate"
           value={lastDate}
-          onChange={(e) => onChange(e)}
+          onChange={onChange}
         />
       </div>
+    </div>
+  );
+};
 
-      </div>      
-    );
-  };
-  
-  export default AddPostInputField;
+export default AddPostInputField;
