@@ -5,7 +5,7 @@ namespace VDS_Backend.Src.Utilities
     internal class Utils
     {
         /// <summary>
-        /// randomness generator
+        /// randomness generator 
         /// </summary>
         private static readonly Random random = new Random();
         // all possible characters for random string generation

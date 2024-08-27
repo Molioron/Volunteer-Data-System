@@ -18,7 +18,7 @@ namespace VDS_Backend.Src.VDSServer
     internal class ServerApp
     {
         /// <summary>
-        /// The web server instance
+        /// The web server instance 
         /// </summary>
         private static Webserver server;
         /// <summary>
