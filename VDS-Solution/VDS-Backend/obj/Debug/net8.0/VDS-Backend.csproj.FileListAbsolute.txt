@@ -8,16 +8,7 @@ D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\V
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
-D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\SQLitePCLRaw.core.dll
 D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\SQLitePCLRaw.provider.e_sqlite3.dll
@@ -125,3 +116,8 @@ C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8
 C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.pdb
 C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\VDS-Backend.genruntimeconfig.cache
 C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\obj\Debug\net8.0\ref\VDS-Backend.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.AspNetCore.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.Core.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.NetCore.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.SqlServer.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.MemoryStorage.dll

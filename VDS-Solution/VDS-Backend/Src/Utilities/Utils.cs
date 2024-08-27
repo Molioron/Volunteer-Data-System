@@ -38,5 +38,30 @@ namespace VDS_Backend.Src.Utilities
 
             return dbPath;
         }
+
+        /// <summary>
+        /// Converts a given hour and minute at local time, to the time at UTC time zone.
+        /// </summary>
+        /// <param name="hour">specified hour in local time</param>
+        /// <param name="minute">specified minute in local time</param>
+        /// <returns>The time of the specified hour and minute in UTC timezone.</returns>
+        public static DateTime ConvertToUtc(int hour, int minute)
+        {
+            // Get the current date and time in the local time zone
+            DateTime localTime = new DateTime(
+                DateTime.Now.Year,
+                DateTime.Now.Month,
+                DateTime.Now.Day,
+                hour,
+                minute,
+                0, // seconds
+                DateTimeKind.Local // Specifies that this time is local
+            );
+
+            // Convert the local time to UTC
+            DateTime utcTime = localTime.ToUniversalTime();
+
+            return utcTime;
+        }
     }
 }

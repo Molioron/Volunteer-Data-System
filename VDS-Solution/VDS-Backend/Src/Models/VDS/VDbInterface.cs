@@ -109,11 +109,11 @@ namespace VDS_Backend.Src.Models.VDS
                 var result = handler.GetFilteredPosts(volunteerAreas, jobTypes, initialDate, endDate, dateFilterType);
                 return (OperationStatus.SUCCESS, result);
             }
-            catch (NotImplementedException ex)
+            catch (NotImplementedException)
                 { return (OperationStatus.ILLEGAL_DATE_FILTER_TYPE_ERROR, []); }
-            catch (ArgumentNullException ex)
+            catch (ArgumentNullException)
             { return (OperationStatus.FAILED_DB_PARSE_ERROR, []); }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             { return (OperationStatus.ILLEGAL_DATES_ERROR, []); }
             catch (Exception ex) { Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
@@ -182,6 +182,16 @@ namespace VDS_Backend.Src.Models.VDS
                 }
             }
             return OperationStatus.POST_NOT_FOUND_ERROR;
+        }
+
+        /// <summary>
+        /// Find and removes all posts in the database that have expired.
+        /// That is, their last date is older than the current day.
+        /// Implemented in VDbInterface too, to keep the layer architecture consistent.
+        /// </summary>
+        public void DeleteExpiredPosts()
+        {
+            handler.DeleteExpiredPosts();
         }
     }
 }
