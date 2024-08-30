@@ -39,7 +39,7 @@
 }
 
 .content-container {
-    flex: 1; /* Take up the remaining space for the posts */
+    flex: 1; /* Take up the remaining space */
     border: 2px solid #cccccc;
     border-radius: 8px;
     background-color: #ffffff;
@@ -49,8 +49,17 @@
     justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
-    overflow-y: auto; /* Allow scrolling if the content overflows */
-    max-height: 600px; /* Limit the height of the content */
+    overflow-y: auto; /* Allows scrolling if the content overflows */
+    min-height: 300px; /* Minimum height to ensure good display on smaller screens */
+    max-height: calc(100vh - 200px); /* Dynamic max height relative to viewport */
+    width: 100%; /* Full width of the parent container */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding: 15px; /* Reduced padding for smaller screens */
+    }
 }
 
 .action-buttons {

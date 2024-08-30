@@ -20,6 +20,3 @@ function App() {
 }
 
 export default App;
-{/* <div className="App">
-<Auth />
-</div> */}

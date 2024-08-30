@@ -1,14 +1,21 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import AddPostInputField from './AddPostInputField';
 import './AddPostPage.css';
+import Button from '../../common/Button';
+import { handleLogout } from '../../../utils/GeneralUtils';
+import useFormInput from '../../../hooks/UseFormInput';
+import { apiRequest, BASE_URL } from '../../../utils/ApiUtils';
+import { fetchUserPosts } from '../../../utils/NavigationUtils';
 
 const AddPostPage = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
   const post = location.state?.post; // Access the post data if passed for editing
 
-  const [formData, setFormData] = useState({
+  // Custom hook to manage form data state
+  const { formData, handleInputChange, setFormData } = useFormInput({
     connectionKey: '',
     title: '',
     description: '',
@@ -32,127 +39,54 @@ const AddPostPage = () => {
         lastDate: post.LastDate,
       });
     }
-  }, [post]);
+  }, [post, setFormData]); // Dependency array ensures this effect runs only when post or setFormData changes
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
+  // Function to handle form submission for creating or updating a post
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const url = post ? 'http://localhost:9000/editpost' : 'http://localhost:9000/createpost';
-    const connectionKey = document.cookie.split('=')[1];
-    const updateformData = { ...formData, connectionKey: connectionKey, id: post?.Id };
-
+  
+    // Determine the API endpoint based on whether we are creating or editing a post
+    const urlSuffix = post ? '/editpost' : '/createpost';
+    const url = BASE_URL + urlSuffix;
+    const connectionKey = document.cookie.split('=')[1]; // Get the connection key from cookies
+    const updateformData = { ...formData, connectionKey: connectionKey, id: post?.Id }; // Prepare form data for submission
+  
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateformData),
-      });
-      console.log('Response:', response);
-      console.log(JSON.stringify(updateformData));
-      const result = await response.json();
-      handleResponse(result);
+      const result = await apiRequest(url, 'POST', updateformData);
+      handleResponse(result, urlSuffix);
     } catch (error) {
-      console.error('Error:', error);
       alert('Error: ' + error.message);
     }
   };
 
-  const handleResponse = async (response) => {
+  // Function to handle the response after API call
+  const handleResponse = async (response, operation) => {
     try {
-      const operationStatus = JSON.parse(response.operationStatus);
+      const operationStatus = JSON.parse(response.operationStatus); // Parse the operation status from the response
+
       if (operationStatus.Code === 'Success') {
-        alert(operationStatus.Message);
-
-        // Fetch the user's posts after the update or create operation
-        const connectionKey = document.cookie.split('=')[1];
-        const postsResponse = await fetch('http://localhost:9000/getuserposts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ connectionKey: connectionKey }),
-        });
-
-        const postsResult = await postsResponse.json();
-        const postsOperationStatus = JSON.parse(postsResult.operationStatus);
-
-        if (postsOperationStatus.Code === 'Success') {
-          const userPosts = JSON.parse(postsResult.posts);
-          navigate('/my-posts', { state: { posts: userPosts } });
+        if (operation === '/createpost') {
+          alert('Post created successfully');
         } else {
-          alert('Failed to fetch posts after update');
+          alert('Post updated successfully');
         }
-      } else {
-        alert('Error: ' + operationStatus.Message);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error: ' + error.message);
-    }
-  };
 
-  const handleMyPosts = async () => {
-    try {
-      const connectionKey = document.cookie.split('=')[1];
-      const response = await fetch('http://localhost:9000/getuserposts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ connectionKey: connectionKey }),
-      });
-
-      const result = await response.json();
-      const operationStatus = JSON.parse(result.operationStatus);
-
-      if (operationStatus.Code === 'Success') {
+        // Fetch updated user posts after successful operation
+        const result = await apiRequest(BASE_URL + '/getuserposts', 'POST', { connectionKey: document.cookie.split('=')[1] });
         const userPosts = JSON.parse(result.posts);
-        navigate('/my-posts', { state: { posts: userPosts } });
-      } else {
-        alert('No posts found');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error: ' + error.message);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      const connectionKey = document.cookie.split('=')[1];
-      const response = await fetch('http://localhost:9000/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ connectionKey: connectionKey }),
-      });
-
-      const result = await response.json();
-      const operationStatus = JSON.parse(result.operationStatus);
-      if (operationStatus.Code === 'Success') {
-        alert(operationStatus.Message);
-        document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        navigate('/my-posts');
+        navigate('/my-posts', { state: { posts: userPosts } }); // Navigate to 'My Posts' page with updated posts
       } else {
         alert('Error: ' + operationStatus.Message);
       }
     } catch (error) {
-      console.error('Error:', error);
       alert('Error: ' + error.message);
     }
   };
 
   return (
     <div className="add-post-page">
-      <button className="logout-button" onClick={handleLogout}>Logout</button>
+      <Button className="logout-button" onClick={() => handleLogout(navigate)}>Logout</Button>
       <div>
         <div className='add-post'>
           <AddPostInputField
@@ -168,8 +102,8 @@ const AddPostPage = () => {
         </div>
       </div>
       <div className="add-post-action-button">
-        <button onClick={handleMyPosts}>My Posts</button>
-        <button onClick={handleSubmit}>{post ? 'Update Post' : 'Create Post'}</button>
+        <Button onClick={() => fetchUserPosts(navigate)}>My Posts</Button>
+        <Button onClick={handleSubmit}>{post ? 'Update Post' : 'Create Post'}</Button>
       </div>
     </div>
   );

@@ -1,114 +1,57 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './MyPostsPage.css';
+import Button from '../common/Button';
+import { handleLogout, formatDate } from '../../utils/GeneralUtils';
+import { navigateToHomePage } from '../../utils/NavigationUtils';
+import { apiRequest, BASE_URL } from '../../utils/ApiUtils';
 
 const MyPostsPage = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
+
+
+  // State to store posts, initialized with posts from location state or an empty array
   const [posts, setPosts] = React.useState(location.state?.posts || []);
 
-  const handleLogout = async () => {
-    try {
-      const connectionKey = document.cookie.split('=')[1];
-      const response = await fetch('http://localhost:9000/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ connectionKey: connectionKey }),
-      });
-
-      const result = await response.json();
-      const operationStatus = JSON.parse(result.operationStatus);
-      if (operationStatus.Code === 'Success') {
-        alert(operationStatus.Message);
-        document.cookie = "connectionKey=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        navigate('/');
-      } else {
-        alert('Error: ' + result.operationStatus.Message);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error: ' + error.message);
-    }
-  };
-
+  // Function to handle deleting a post
   const handleDelete = async (postId) => {
     try {
-      const connectionKey = document.cookie.split('=')[1];
-      const response = await fetch('http://localhost:9000/deletepost', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ connectionKey: connectionKey, id: postId }),
+      await apiRequest(BASE_URL + '/deletepost', 'POST', {
+        connectionKey: document.cookie.split('=')[1], // Retrieve connection key from cookies
+        id: postId,  // Pass the postId to delete
       });
+      alert('Post deleted successfully');
 
-      const result = await response.json();
-      const operationStatus = JSON.parse(result.operationStatus);
-
-      if (operationStatus.Code === 'Success') {
-        alert('Post deleted successfully');
-        setPosts(posts.filter(post => post.Id !== postId));
-      } else {
-        alert('Failed to delete the post');
-      }
+      // Update state to remove the deleted post
+      setPosts(posts.filter((post) => post.Id !== postId));
     } catch (error) {
-      console.error('Error:', error);
       alert('Error: ' + error.message);
     }
   };
 
+  // Update state to remove the deleted post
   const handleEdit = (post) => {
-    navigate('/add-post', { state: { post } });
+    navigate('/add-post', { state: { post } }); // Navigate to 'Add Post' page with the post data for editing
   };
 
+  // Function to handle adding a new post
   const handleAddPost = () => {
-    navigate('/add-post');
+    navigate('/add-post'); // Navigate to 'Add Post' page
   };
 
+  // Function to handle navigation to the home page
   const handleHome = async () => {
-    try {
-      const allPostsResponse = await fetch('http://localhost:9000/getfilteredposts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          volunteerAreas: [],
-          jobTypes: [],
-          initialDate: '',
-          lastDate: '',
-          dateFilterType: ''
-        }) // Send an empty object to fetch all posts without filters
-      });
-
-      const allPostsResult = await allPostsResponse.json();
-      const postsOperationStatus = JSON.parse(allPostsResult.operationStatus);
-
-      if (postsOperationStatus.Code === 'Success') {
-        const allPosts = JSON.parse(allPostsResult.posts);
-        navigate('/main', { state: { posts: allPosts } });
-      } else {
-        alert('Failed to fetch posts');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error: ' + error.message);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    let [year, month, day] = dateString.split('-');
-    day = day.split('T')[0];
-    day = day.length === 1 ? `0${day}` : day;
-    return `${day}.${month}.${year}`;
+    navigateToHomePage(navigate); // Use the utility function to navigate to the home page
   };
 
   return (
     <div className="my-posts-page">
-      <button className="logout-button" onClick={handleLogout}>Logout</button>
+      <Button className="logout-button" onClick={() => handleLogout(navigate)}>Logout</Button>
+
       <div className="posts-container">
+        <h2>My Posts</h2>
         {posts.length > 0 ? (
           posts.map((post) => (
             <div key={post.Id} className="post-item">
@@ -119,8 +62,8 @@ const MyPostsPage = () => {
               <p><strong>Address:</strong> {post.Address}</p>
               <p><strong>Phone Number:</strong> {post.PhoneNumber}</p>
               <p><strong>Dates:</strong> {formatDate(post.InitialDate)} - {formatDate(post.LastDate)}</p>
-              <button className="edit-button" onClick={() => handleEdit(post)}>Edit</button>
-              <button className="delete-button" onClick={() => handleDelete(post.Id)}>Delete</button>
+              <Button className="edit-button" onClick={() => handleEdit(post)}>Edit</Button>
+              <Button className="delete-button" onClick={() => handleDelete(post.Id)}>Delete</Button>
             </div>
           ))
         ) : (
@@ -128,8 +71,8 @@ const MyPostsPage = () => {
         )}
       </div>
       <div className="action-buttons">
-        <button onClick={handleAddPost}>Add Post</button>
-        <button onClick={handleHome}>Home</button>
+        <Button onClick={handleAddPost}>Add Post</Button>
+        <Button onClick={handleHome}>Home</Button>
       </div>
     </div>
   );

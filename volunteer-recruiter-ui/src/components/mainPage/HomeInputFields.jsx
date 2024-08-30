@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { MultiSelect } from 'react-multi-select-component';
+import React, { useState, useEffect } from 'react';
+import InputField from '../common/InputField'; 
+import { MultiSelect } from 'react-multi-select-component'; 
 import './HomePage.css';
+
+const areas = [ 
+  { label: "North", value: "North" },
+  { label: "South", value: "South" },
+  { label: "Central", value: "Central" },
+];
+
+const jobs = [
+  { label: "Agriculture", value: "Agriculture" },
+  { label: "Cooking", value: "Cooking" },
+  { label: "Transportation", value: "Transportation" },
+  { label: "AnimalCare", value: "AnimalCare" }
+];
 
 const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area, jobTitle }) => {
 
-  const areas = [
-    { label: "North", value: "North" },
-    { label: "South", value: "South" },
-    { label: "Central", value: "Central" },
-  ];
+  // State to manage selected areas and job types, initialized with the props provided
+  const [selectedAreas, setSelectedAreas] = useState(area.map(a => ({ label: a, value: a })));
+  const [selectedJobs, setSelectedJobs] = useState(jobTitle.map(j => ({ label: j, value: j })));
 
-  const jobs = [
-    { label: "Agriculture", value: "Agriculture" },
-    { label: "Cooking", value: "Cooking" },
-    { label: "Transportation", value: "Transportation" },
-    { label: "AnimalCare", value: "AnimalCare" }
-  ];
-
-  // Initialize selectedArea based on the area prop
-  const [selectedArea, setSelectedArea] = useState(area.map(a => ({ label: a, value: a })));
-  const [selectedJob, setSelectedJob] = useState(jobTitle.map(j => ({ label: j, value: j })));
-
+  // Effect hook to handle changes in selected areas or job types
   useEffect(() => {
-    // Extract the values only and update the parent component's state
-    onChange({ target: { name: 'volunteerAreas', value: selectedArea.map(area => area.value) } });
-  }, [selectedArea]);
-
-  useEffect(() => {
-    // Extract the values only and update the parent component's state
-    onChange({ target: { name: 'jobTypes', value: selectedJob.map(job => job.value) } });
-  }, [selectedJob]);
+    // Call the onChange handler whenever selected areas or job types change
+    onChange({ target: { name: 'volunteerAreas', value: selectedAreas.map(area => area.value) } });
+    onChange({ target: { name: 'jobTypes', value: selectedJobs.map(job => job.value) } });
+  }, [selectedAreas, selectedJobs, onChange]); 
 
   return (
     <div className="home-input-fields">
@@ -37,8 +35,8 @@ const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area
         <label>Area:</label>
         <MultiSelect 
           options={areas} 
-          value={selectedArea} 
-          onChange={setSelectedArea} 
+          value={selectedAreas} 
+          onChange={setSelectedAreas} 
           labelledBy="Select Area"
         />
       </div>
@@ -47,40 +45,19 @@ const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area
         <label>Job Title:</label>
         <MultiSelect 
           options={jobs} 
-          value={selectedJob} 
-          onChange={setSelectedJob} 
+          value={selectedJobs} 
+          onChange={setSelectedJobs} 
           labelledBy="Select Job Title"
         />
       </div>
 
-      <div className="form-group">
-        <label>Initial Date:</label>
-        <input
-          type="date"
-          name="initialDate"
-          value={initialDate}
-          onChange={(e) => onChange(e)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>End Date:</label>
-        <input
-          type="date"
-          name="lastDate"
-          value={lastDate}
-          onChange={(e) => onChange(e)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Date Type:</label>
-        <select name="dateFilterType" value={dateFilterType} onChange={(e) => onChange(e)}>
-          <option value="">Select Date Type</option>
-          <option value="Contains">Contains</option>
-          <option value="Intersects">Intersects</option>
-        </select>
-      </div>
+      <InputField label="Initial Date:" type="date" name="initialDate" value={initialDate} onChange={onChange} />
+      <InputField label="End Date:" type="date" name="lastDate" value={lastDate} onChange={onChange} />
+      <InputField label="Date Type:" type="select" name="dateFilterType" value={dateFilterType} onChange={onChange} options={[
+        { label: "Select Date Type", value: "" },
+        { label: "Contains", value: "Contains" },
+        { label: "Intersects", value: "Intersects" }
+      ]} />
     </div>
   );
 };
