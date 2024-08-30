@@ -82,7 +82,7 @@ const AddPostPage = () => {
     } catch (error) {
       alert('Error: ' + error.message);
     }
-  };
+
 
   return (
     <div className="add-post-page">
@@ -109,4 +109,5 @@ const AddPostPage = () => {
   );
 };
 
+};
 export default AddPostPage;

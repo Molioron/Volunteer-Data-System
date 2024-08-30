@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import HomeInputFields from './HomeInputFields';
 import './HomePage.css';
 import Button from '../common/Button';
@@ -23,6 +23,7 @@ const HomePage = () => {
     dateFilterType: '',
   });
 
+
   // State to hold the posts; initialized with posts passed via location state or an empty array
   const [posts, setPosts] = useState(location.state?.posts || []); 
 
@@ -43,7 +44,7 @@ const HomePage = () => {
       setPosts(posts);
     } catch (error) {
       alert('Error: ' + error.message);
-    }
+    }  
   };
 
   return (
@@ -64,6 +65,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="content-container">
+        {/* Here you will render the posts */}
         <h2>Posts</h2>
         {posts.length > 0 ? posts.map(post => <PostItem key={post.Id} post={post} />) : <p>No posts to display.</p>}
       </div>

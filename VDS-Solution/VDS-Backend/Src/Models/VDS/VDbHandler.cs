@@ -58,7 +58,7 @@ namespace VDS_Backend.Src.Models.VDS
         /// <returns>true if the user was removed successfully, otherwise false.</returns>
         public bool removeUser(string email)
         {
-            return RemoveIfNotExists(Context.Users, email);
+            return RemoveIfExists(Context.Users, email);
         }
         /// <summary>
         /// Creates a new recruitment post for the user.
@@ -93,7 +93,7 @@ namespace VDS_Backend.Src.Models.VDS
         /// <returns>true if the post was removed successfully, otherwise false.</returns>
         public bool removeRecruitmentPost(int id)
         {
-            return RemoveIfNotExists(Context.Recruitments, id);
+            return RemoveIfExists(Context.Recruitments, id);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace VDS_Backend.Src.Models.VDS
                 Context.SaveChanges();
                 return true;
             }
-            catch (Exception ex) { return false; }
+            catch (Exception) { return false; }
         }
 
         /// <summary>
@@ -259,6 +259,24 @@ namespace VDS_Backend.Src.Models.VDS
                 return query.First(); // exactly 1 result
             }
             return null;
+        }
+
+        /// <summary>
+        /// Find and removes all posts in the database that have expired.
+        /// That is, their last date is older than the current day.
+        /// </summary>
+        public void DeleteExpiredPosts()
+        {
+            // find all expired posts
+            var expiredPosts = from posts in Context.Recruitments
+                        where posts.LastDate < DateTime.Today
+                        select posts;
+
+            // remove expired posts
+            foreach (var post in expiredPosts)
+            {
+                RemoveIfExists(Context.Recruitments, post.Id);
+            }
         }
 
 
@@ -289,13 +307,14 @@ namespace VDS_Backend.Src.Models.VDS
         }
         /// <summary>
         /// Removes an entity based on a given primary key.
+        /// NOTICE: Throws exception if key type of set mismatches given key type 'K'.
         /// </summary>
         /// <typeparam name="T">type of entity.</typeparam>
         /// <typeparam name="K">type of key of the entity to remove.</typeparam>
         /// <param name="dbSet">table the entity is in</param>
         /// <param name="key">the primary key of the entity</param>
         /// <returns>true if the entity was found and removed successfully, otherwise false</returns>
-        private bool RemoveIfNotExists<T, K>(DbSet<T> set, K key) where T : class, new()
+        private bool RemoveIfExists<T, K>(DbSet<T> set, K key) where T : class, new()
         {
             // Find the entity by key
             var entity = set.Find(key);

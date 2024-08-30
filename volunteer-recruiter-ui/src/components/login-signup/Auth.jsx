@@ -36,6 +36,7 @@ const Auth = () => {
     e.preventDefault();
   
     const url = isSignup ? BASE_URL + '/signup' : BASE_URL + '/login';
+
     try {
       const result = await apiRequest(url, 'POST', formData);
       handleResponse(result);
@@ -56,6 +57,7 @@ const Auth = () => {
     } catch (error) {
       alert('Error: Invalid response format');
     }
+
   };
 
   return (

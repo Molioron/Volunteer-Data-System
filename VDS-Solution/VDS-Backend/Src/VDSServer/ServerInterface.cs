@@ -321,6 +321,7 @@ namespace VDS_Backend.Src.VDSServer
             if (input != null)
             {
                 string? email = GetEmailFromKey(input.ConnectionKey);
+                Console.WriteLine($"email: {email}, id: {input.Id}");
                 if (email == null)
                 {
                     status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
@@ -338,6 +339,16 @@ namespace VDS_Backend.Src.VDSServer
                 operationStatus = SafeSerializeObject(status),
             };
             return SafeSerializeObject(response);
+        }
+
+        /// <summary>
+        /// Find and removes all posts in the database that have expired.
+        /// That is, their last date is older than the current day.
+        /// Implemented in ServerInterface too, to keep the layer architecture consistent.
+        /// </summary>
+        public void DeleteExpiredPosts()
+        {
+            dbInterface.DeleteExpiredPosts();
         }
 
         /// <summary>

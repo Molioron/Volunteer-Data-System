@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './MyPostsPage.css';
 import Button from '../common/Button';
 import { handleLogout, formatDate } from '../../utils/GeneralUtils';
