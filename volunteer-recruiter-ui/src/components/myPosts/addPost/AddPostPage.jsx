@@ -41,7 +41,6 @@ const AddPostPage = () => {
     }
   }, [post, setFormData]); // Dependency array ensures this effect runs only when post or setFormData changes
 
-
   // Function to handle form submission for creating or updating a post
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,24 +81,22 @@ const AddPostPage = () => {
     } catch (error) {
       alert('Error: ' + error.message);
     }
-
+  };
 
   return (
     <div className="add-post-page">
       <Button className="logout-button" onClick={() => handleLogout(navigate)}>Logout</Button>
-      <div>
-        <div className='add-post'>
-          <AddPostInputField
-            title={formData.title}
-            description={formData.description}
-            address={formData.address}
-            volunteerArea={formData.volunteerArea}
-            jobType={formData.jobType}
-            initialDate={formData.initialDate}
-            lastDate={formData.lastDate}
-            onChange={handleInputChange}
-          />
-        </div>
+      <div className='add-post'>
+        <AddPostInputField
+          title={formData.title}
+          description={formData.description}
+          address={formData.address}
+          volunteerArea={formData.volunteerArea}
+          jobType={formData.jobType}
+          initialDate={formData.initialDate}
+          lastDate={formData.lastDate}
+          onChange={handleInputChange}
+        />
       </div>
       <div className="add-post-action-button">
         <Button onClick={() => fetchUserPosts(navigate)}>My Posts</Button>
@@ -109,5 +106,4 @@ const AddPostPage = () => {
   );
 };
 
-};
 export default AddPostPage;
