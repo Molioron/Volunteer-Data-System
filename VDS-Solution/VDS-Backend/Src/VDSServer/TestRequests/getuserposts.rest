@@ -1,7 +1,6 @@
-﻿POST http://localhost:9000/deletepost
+﻿POST http://localhost:9000/getuserposts
 Content-Type: application/json
 
 {
-  "connectionKey": "vkrDmCc5HMr39GXX",
-  "id": 7
+  "connectionKey": "arufdVraybhMk1G4",
 }

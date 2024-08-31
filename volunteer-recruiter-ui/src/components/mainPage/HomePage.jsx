@@ -40,6 +40,7 @@ const HomePage = () => {
   const fetchFilteredPosts = async () => {
     try {
       const result = await apiRequest( BASE_URL + '/getfilteredposts', 'POST', formData);
+
       const posts = JSON.parse(result.posts);
       setPosts(posts);
     } catch (error) {

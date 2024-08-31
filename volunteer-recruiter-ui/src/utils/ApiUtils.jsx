@@ -16,7 +16,7 @@ export const apiRequest = async (url, method = 'GET', body = null) => {
   
       // If there is a body, stringify it and add it to the request options
       if (body) {
-        options.body = JSON.stringify(body);
+        options.body = JSON.stringify(body); 
       }
       
       // Perform the fetch request to the specified URL with the given options

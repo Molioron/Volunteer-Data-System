@@ -22,12 +22,21 @@ const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area
   const [selectedAreas, setSelectedAreas] = useState(area.map(a => ({ label: a, value: a })));
   const [selectedJobs, setSelectedJobs] = useState(jobTitle.map(j => ({ label: j, value: j })));
 
-  // Effect hook to handle changes in selected areas or job types
+  // Effect hook to handle changes in selected areas
   useEffect(() => {
-    // Call the onChange handler whenever selected areas or job types change
-    onChange({ target: { name: 'volunteerAreas', value: selectedAreas.map(area => area.value) } });
-    onChange({ target: { name: 'jobTypes', value: selectedJobs.map(job => job.value) } });
-  }, [selectedAreas, selectedJobs, onChange]); 
+    const newVolunteerAreas = selectedAreas.map(area => area.value);
+    if (newVolunteerAreas.join(',') !== area.join(',')) {
+      onChange({ target: { name: 'volunteerAreas', value: newVolunteerAreas } });
+    }
+  }, [selectedAreas, area, onChange]); 
+
+  // Effect hook to handle changes in selected jobs
+  useEffect(() => {
+    const newJobTypes = selectedJobs.map(job => job.value);
+    if (newJobTypes.join(',') !== jobTitle.join(',')) {
+      onChange({ target: { name: 'jobTypes', value: newJobTypes } });
+    }
+  }, [selectedJobs, jobTitle, onChange]);
 
   return (
     <div className="home-input-fields">

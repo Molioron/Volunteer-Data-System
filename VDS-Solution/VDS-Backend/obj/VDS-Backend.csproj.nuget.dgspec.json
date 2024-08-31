@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DELL\\code\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj": {}
+    "D:\\Program Files\\C# Projects\\Repos\\Molioron\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DELL\\code\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj": {
+    "D:\\Program Files\\C# Projects\\Repos\\Molioron\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DELL\\code\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj",
+        "projectUniqueName": "D:\\Program Files\\C# Projects\\Repos\\Molioron\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj",
         "projectName": "VDS-Backend",
-        "projectPath": "C:\\Users\\DELL\\code\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj",
-        "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DELL\\code\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\obj\\",
+        "projectPath": "D:\\Program Files\\C# Projects\\Repos\\Molioron\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\VDS-Backend.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "D:\\Program Files\\C# Projects\\Repos\\Molioron\\Volunteer-Data-System\\VDS-Solution\\VDS-Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -107,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
