@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="VDS_Backend.Src.Models.VDS.VDbHandler" Collapsed="true">
+    <Position X="3" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAASAAAgAAgAAAAACBAAEAgAAAAQAAEAAQIAAAAAA=</HashCode>
+      <FileName>Src\Models\VDS\VDbHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Models.VDS.VDbInterface" Collapsed="true">
+    <Position X="4.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAgAAAAACAAAAACBAAEAAIAAAAAAAAAQAgAAAAA=</HashCode>
+      <FileName>Src\Models\VDS\VDbInterface.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Models.VDS.Contexts.VDSContext" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Src\Models\VDS\Contexts\VDSContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Models.VDS.Contexts.VDSContextSQLite" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAABAAAAAgAAAAA=</HashCode>
+      <FileName>Src\Models\VDS\Contexts\VDSContextSQLite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Models.VDS.Tables.RecruitmentPost" Collapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAgAEAAAAIAAAAAAAACAABCAAAACAAAAgA=</HashCode>
+      <FileName>Src\Models\VDS\Tables\RecruitmentPost.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Models.VDS.Tables.User" Collapsed="true">
+    <Position X="4.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAAABAAAAAQAAAAAAAAAACAAAAAAAAAAg=</HashCode>
+      <FileName>Src\Models\VDS\Tables\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Utilities.OperationStatus" Collapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAASAAAABgAABIBEgAAAQAAACAAAAAAAAIQAIAAA=</HashCode>
+      <FileName>Src\Utilities\OperationStatus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.Utilities.Utils" Collapsed="true">
+    <Position X="6.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQQAAAAAAAAAAAABAAAAQAAABAAAA=</HashCode>
+      <FileName>Src\Utilities\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.VDSServer.ServerInterface" Collapsed="true">
+    <Position X="3" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAABAAAAACAQAABCBAAOAAICAAAEAIAAQAgABAAA=</HashCode>
+      <FileName>Src\VDSServer\Payloads.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS_Backend.Src.VDSServer.ServerApp" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAEAACAKAAAAMoAABgAAQAAAAAAAAEAAAAAAgAM=</HashCode>
+      <FileName>Src\VDSServer\ServerApp.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="VDS_Backend.Src.Models.VDS.DataTypes.DateFilterType" Collapsed="true">
+    <Position X="3" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAIA=</HashCode>
+      <FileName>Src\Models\VDS\DataTypes\DateFilterType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VDS_Backend.Src.Models.VDS.DataTypes.Job" Collapsed="true">
+    <Position X="4.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAgAAAAAIAAAAQ=</HashCode>
+      <FileName>Src\Models\VDS\DataTypes\Job.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VDS_Backend.Src.Models.VDS.DataTypes.Location" Collapsed="true">
+    <Position X="6.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAEAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Src\Models\VDS\DataTypes\Location.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VDS_Backend.Src.Utilities.StatusCode" Collapsed="true">
+    <Position X="3" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAEAAAAAAQAgAACAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Src\Utilities\OperationStatus.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

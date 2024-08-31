@@ -133,15 +133,18 @@ namespace VDS_Backend.Src.Models.VDS
             // only posts
             var query = Context.Recruitments.Include(r => r.User).AsQueryable();
 
+            // Create a list to hold all conditions
+            var conditions = new List<Expression<Func<RecruitmentPost, bool>>>();
+
             // filter by location
             if (volunteerAreas.Length > 0) // filter only when necessary
             {
-                query = query.Where(posts => volunteerAreas.Contains(posts.Location));
+                conditions.Add(posts => volunteerAreas.Contains(posts.Location));
             }
             // filter by job type
             if (jobTypes.Length > 0) // filter only when necessary
             {
-                query = query.Where(posts => jobTypes.Contains(posts.Job));
+                conditions.Add(posts => jobTypes.Contains(posts.Job));
             }
 
             // filter by date only when necessary (all not null)
@@ -151,13 +154,13 @@ namespace VDS_Backend.Src.Models.VDS
                 switch (dateFilterType)
                 {
                     case DateFilterType.Contains:
-                        query = query.Where(posts => initialDate <= posts.InitialDate &&
+                        conditions.Add(posts => initialDate <= posts.InitialDate &&
                         posts.InitialDate <= posts.LastDate &&
                         posts.LastDate <= endDate);
                         break;
 
                     case DateFilterType.Intersects:
-                        query = query.Where(posts => posts.InitialDate <= posts.LastDate &&
+                        conditions.Add(posts => posts.InitialDate <= posts.LastDate &&
                                                      ((initialDate <= posts.LastDate && posts.LastDate <= endDate) ||
                                                       (initialDate <= posts.InitialDate && posts.InitialDate <= endDate)) ||
                                                       (posts.InitialDate <= initialDate && endDate <= posts.LastDate));
@@ -167,6 +170,11 @@ namespace VDS_Backend.Src.Models.VDS
                         throw new NotImplementedException("Unknown DateFilterType value.");
                 }
             }
+
+            // Apply all conditions in a single Where clause
+            var finalCondition = CombineConditions(conditions);
+            query = query.Where(finalCondition);
+
             // result of the query
             var result = query.Select(posts => new PostInfo
             {
@@ -277,6 +285,38 @@ namespace VDS_Backend.Src.Models.VDS
             {
                 RemoveIfExists(Context.Recruitments, post.Id);
             }
+        }
+
+        /// <summary>
+        /// Combines conditions into a single condition for a .Where() method.
+        /// (all conditions have the same parameter)
+        /// </summary>
+        /// <typeparam name="T">parameter type for the conditions</typeparam>
+        /// <param name="conditions">list of conditions to sum.</param>
+        /// <returns>the cumulative condition</returns>
+        public static Expression<Func<T, bool>> CombineConditions<T>(IEnumerable<Expression<Func<T, bool>>> conditions)
+        {
+            // Sanity check: given conditions must not be emptyu
+            if (!conditions.Any())
+            {
+                // tautology predicate (always returns true)
+                return _ => true;
+            }
+
+            // Accumulates the conditions into a single expression
+            var finalCondition = conditions
+                .Aggregate((current, next) =>
+                {
+                    // Combine the current and next expressions
+                    var parameter = current.Parameters[0];
+                    var combinedBody = Expression.AndAlso(
+                        current.Body,
+                        Expression.Invoke(next, parameter)
+                    );
+                    return Expression.Lambda<Func<T, bool>>(combinedBody, parameter);
+                });
+
+            return finalCondition;
         }
 
 
