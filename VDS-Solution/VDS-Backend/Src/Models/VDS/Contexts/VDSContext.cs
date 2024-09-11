@@ -24,5 +24,10 @@ namespace VDS_Backend.Src.Models.VDS.Contexts
         /// The table of posts about recruiting volunteers in the system.
         /// </summary>
         public DbSet<RecruitmentPost> Recruitments { get; set; }
+
+        /// <summary>
+        /// The table that represents the relationship that users can join posts (many-to-many)
+        /// </summary>
+        public DbSet<UserPostRelation> UserPostRelation { get; set; }
     }
 }
