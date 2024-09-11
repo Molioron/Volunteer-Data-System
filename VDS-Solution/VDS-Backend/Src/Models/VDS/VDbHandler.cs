@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using VDS_Backend.Src.Models.VDS.DataTypes;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Net;
+using VDS_Backend.Src.Utilities;
 
 namespace VDS_Backend.Src.Models.VDS
 {
@@ -71,10 +72,11 @@ namespace VDS_Backend.Src.Models.VDS
         /// <param name="job">the general job/work in the place of volunteering</param>
         /// <param name="initialDate">initial date of the duration of volunteering</param>
         /// <param name="lastDate">last date of the duration of volunteering</param>
+        /// <param name="maxVolunteers">maximum number of volunteers allowed to join post</param>
         /// <returns>true if the post was created successfully, otherwise false.</returns>
         /// <exception cref="ArgumentException">if initial date is after last date.</exception>
-        public bool addRecruitmentPost(string userEmail, string title, string description, string address,
-            Location location, Job job, DateTime initialDate, DateTime lastDate)
+        public bool AddRecruitmentPost(string userEmail, string title, string description, string address,
+            Location location, Job job, DateTime initialDate, DateTime lastDate, int maxVolunteers)
         {
             if (initialDate > lastDate) // sanity check: initial date is not after last date.
             {
@@ -83,7 +85,7 @@ namespace VDS_Backend.Src.Models.VDS
 
             var post = new RecruitmentPost()
             { UserEmail = userEmail, Title = title, Description = description, Address = address, Location = location,
-            Job = job, InitialDate = initialDate, LastDate = lastDate};
+            Job = job, InitialDate = initialDate, LastDate = lastDate, MaxVolunteers = maxVolunteers};
             return AddIfNotExists(Context.Recruitments, post) is not null;
         }
         /// <summary>
@@ -267,6 +269,91 @@ namespace VDS_Backend.Src.Models.VDS
                 return query.First(); // exactly 1 result
             }
             return null;
+        }
+
+        /// <summary>
+        /// Determines the number of users who joined a specific post.
+        /// </summary>
+        /// <param name="postId">id of the post</param>
+        /// <returns>the number of users who joined a specific post.
+        /// if post id is not valid, it will still return 0.</returns>
+        public int GetPostUsersCount(int postId)
+        {
+            var query = from userPostPair in Context.UserPostRelation
+                        where userPostPair.PostId == postId
+                        select userPostPair;
+            return query.Count();
+        }
+
+        /// <summary>
+        /// Determines the maximum number of users who can join a specific post.
+        /// Throws ArgumentOutofRangeException if no such post exists
+        /// </summary>
+        /// <param name="postId">id of the post</param>
+        /// <returns>the maximum number of users who can join a specific post.</returns>
+        public int GetPostMaxUsers(int postId)
+        {
+            var query = from post in Context.Recruitments
+                        where post.Id == postId
+                        select post.MaxVolunteers;
+            return query.ElementAt(0);
+        }
+
+        /// <summary>
+        /// Determines if a given user has joined the specified post
+        /// </summary>
+        /// <param name="email">email of the user</param>
+        /// <param name="postId">id of the post</param>
+        /// <returns>true if the user has joined the post, otherwise false (even if user or post do not exists).</returns>
+        public bool HasUserJoinedPost(string email, int postId)
+        {
+            var query = from userPostPair in Context.UserPostRelation
+                        where userPostPair.UserEmail == email && userPostPair.PostId == postId
+                        select userPostPair;
+            return query.Any();
+        }
+
+        /// <summary>
+        /// Allows a user to join a post.
+        /// Throws ArgumentException if either post id or user email do not exist.
+        /// Throws MaxVolunteersReachedException if the post is full.
+        /// </summary>
+        /// <param name="email">email of user</param>
+        /// <param name="postId">id of post to join</param>
+        /// <returns>true if successfully user has joined post, otherwise false if user already joined post
+        /// or an error has occurred along the way.</returns>
+        public bool JoinUserToPost(string email, int postId)
+        {
+            if (HasUserJoinedPost(email, postId)) { return false; };
+            
+            // post id does not exist
+            var query1 = from posts in Context.Recruitments
+                        where posts.Id == postId
+                        select posts;
+            if (!query1.Any()) { throw new ArgumentException("post id is invalid!"); }
+
+            // user email does not exists
+            var query2 = from users in Context.Users
+                        where users.Email == email
+                        select users;
+            if (!query2.Any()) { throw new ArgumentException("user email is invalid!"); }
+
+            int max = GetPostMaxUsers(postId); // should not throw exception because post id passed check.
+            int current = GetPostUsersCount(postId);
+            // post is full (negative max means no max limit)
+            if(max > 0 && current >= max) { throw new MaxVolunteersReachedException(); }
+
+            try
+            {
+                var relation = new UserPostRelation()
+                {
+                    UserEmail = email,
+                    PostId = postId
+                };
+                AddIfNotExists(Context.UserPostRelation, relation);
+                return true;
+            }
+            catch { return false; }
         }
 
         /// <summary>

@@ -184,7 +184,7 @@ namespace VDS_Backend.Src.VDSServer
 
             // status result of creating post
             OperationStatus status = dbInterface.CreatePost(email, input.Title, input.Description, input.Address,
-                input.VolunteerArea, input.JobType, input.InitialDate, input.LastDate);
+                input.VolunteerArea, input.JobType, input.InitialDate, input.LastDate, input.MaxVolunteers);
             // the response sent due to request
             var response = new
             {
@@ -305,7 +305,7 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
-        /// edit a post in db.
+        /// deletes a post in db.
         /// </summary>
         /// <param name="ctx">the http context</param>
         /// <returns>responses</returns>
@@ -313,7 +313,7 @@ namespace VDS_Backend.Src.VDSServer
         {
             // unload the payload
             string body = ctx.Request.DataAsString;
-            var input = SafeDeserializeObjectToJson<DeletePostInputPayload>(body);
+            var input = SafeDeserializeObjectToJson<ConnectionKeyPostInputPayload>(body);
 
             // result status
             // default status unknown payload
@@ -340,6 +340,45 @@ namespace VDS_Backend.Src.VDSServer
             };
             return SafeSerializeObject(response);
         }
+
+        /// <summary>
+        /// allows a user to join a post if it's not full.
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string JoinUserToPost(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<ConnectionKeyPostInputPayload>(body);
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                Console.WriteLine($"email: {email}, id: {input.Id}");
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    status = dbInterface.JoinUserToPost(email, input.Id);
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+            };
+            return SafeSerializeObject(response);
+        }
+
+
 
         /// <summary>
         /// Find and removes all posts in the database that have expired.

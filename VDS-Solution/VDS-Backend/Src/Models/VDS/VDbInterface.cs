@@ -75,14 +75,16 @@ namespace VDS_Backend.Src.Models.VDS
         /// <param name="jobType">the general job/work in the place of volunteering</param>
         /// <param name="initialDate">initial date of the duration of volunteering</param>
         /// <param name="lastDate">last date of the duration of volunteering</param>
+        /// <param name="maxVolunteers">maximum number of volunteers allowed to join post</param>
         /// <returns>Sucess if the post was created successfully, otherwise ServerError.</returns>
         public OperationStatus CreatePost(string email, string title, string description,
-            string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate)
+            string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime lastDate,
+            int maxVolunteers)
         {
             try
             {
-                if (handler.addRecruitmentPost(email, title, description, address, volunteerArea, jobType,
-                initialDate, lastDate))
+                if (handler.AddRecruitmentPost(email, title, description, address, volunteerArea, jobType,
+                initialDate, lastDate, maxVolunteers))
                 {
                     return OperationStatus.SUCCESS; // post added successfully
                 }
@@ -185,6 +187,27 @@ namespace VDS_Backend.Src.Models.VDS
         }
 
         /// <summary>
+        /// Allows a user to join a post.
+        /// </summary>
+        /// <param name="email">email of user</param>
+        /// <param name="postId">id of post to join</param>
+        /// <returns>true if successfully user has joined post, otherwise false if user already joined post
+        /// or an error has occurred along the way.</returns>
+        public OperationStatus JoinUserToPost(string email, int postId)
+        {
+            try
+            {
+                if (handler.JoinUserToPost(email, postId))
+                {
+                    return OperationStatus.SUCCESS;
+                }
+            }
+            catch(ArgumentException) { return OperationStatus.POST_OR_USER_NOT_FOUND_ERROR; }
+            catch(MaxVolunteersReachedException) { return OperationStatus.POST_FULL_ERROR; }
+            return OperationStatus.FAILED_JOINING_USER_TO_POST;
+        }
+
+        /// <summary>
         /// Find and removes all posts in the database that have expired.
         /// That is, their last date is older than the current day.
         /// Implemented in VDbInterface too, to keep the layer architecture consistent.
@@ -194,4 +217,5 @@ namespace VDS_Backend.Src.Models.VDS
             handler.DeleteExpiredPosts();
         }
     }
+
 }

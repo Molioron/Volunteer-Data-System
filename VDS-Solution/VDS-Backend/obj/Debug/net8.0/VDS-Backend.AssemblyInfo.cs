@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VDS-Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae9ef714bea75e11aa47a3946fb8a3c64a8b2b0f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c8aabd7139f34925d855003841b3908c42731f8")]
 [assembly: System.Reflection.AssemblyProductAttribute("VDS-Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VDS-Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

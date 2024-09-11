@@ -54,6 +54,8 @@ namespace VDS_Backend.Src.VDSServer
             public Job JobType { get; set; }
             public DateTime InitialDate { get; set; }
             public DateTime LastDate { get; set; }
+
+            public int MaxVolunteers { get; set; }
         }
 
         /// <summary>
@@ -85,9 +87,10 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
-        /// input received from delete post request
+        /// input received from delete post request,
+        /// as well as any requests that only requrie connection key and post id
         /// </summary>
-        private class DeletePostInputPayload
+        private class ConnectionKeyPostInputPayload
         {
             public string ConnectionKey { get; set; }
             public int Id { get; set; }

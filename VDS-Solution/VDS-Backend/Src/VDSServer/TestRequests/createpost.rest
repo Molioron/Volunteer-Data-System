@@ -2,12 +2,13 @@
 Content-Type: application/json
 
 {
-  "connectionkey": "g92spZfXH2x4JgzS",
-  "title": "john's recruitment",
+  "connectionkey": "n6bDR9pGKrq7q5po",
+  "title": "john's recruitment 2",
   "description": "looking for cooks",
   "address": "somewhere up north",
   "volunteerArea": "North",
   "jobType": "Cooking",
-  "initialDate": "2024-08-14T00:00:00Z",
-  "lastDate": "2024-08-16T23:59:59Z"
+  "initialDate": "2024-09-14T00:00:00Z",
+  "lastDate": "2024-09-29T23:59:59Z",
+  "maxVolunteers": 1
 }

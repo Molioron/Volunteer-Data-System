@@ -49,5 +49,11 @@ namespace VDS_Backend.Src.Models.VDS.Tables
         /// Last date one can volunteer in this place.
         /// </summary>
         public DateTime LastDate { get; set; }
+
+        /// <summary>
+        /// Maximum Number of volunteers allowed to join.
+        /// Negative number means no limit.
+        /// </summary>
+        public int MaxVolunteers {  get; set; }
     }
 }

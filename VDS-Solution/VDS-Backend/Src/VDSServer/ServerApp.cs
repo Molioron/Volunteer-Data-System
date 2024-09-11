@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.Storage;
+using System.Reflection;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Utilities;
 using WatsonWebserver;
@@ -48,6 +49,7 @@ namespace VDS_Backend.Src.VDSServer
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/getuserposts", GetUserPostsRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/editpost", EditPostRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/deletepost", DeletePostRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/joinusertopost", JoinUserToPostRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();
             serverInterface = new ServerInterface(db);
@@ -132,90 +134,58 @@ namespace VDS_Backend.Src.VDSServer
         static async Task DefaultRoute(HttpContextBase ctx) =>
             await ctx.Response.Send("Hello from default route!");
 
-        // route to sign up users
+        // Route to sign up users
         static async Task SignupRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[SIGNUP] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.\n");
-            string response = serverInterface.SignUp(ctx);
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("SIGNUP", ctx, serverInterface.SignUp);
         }
 
-        // route to login as a user
+        // Route to login as a user
         static async Task LoginRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[LOGIN] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.\n");
-            string response = serverInterface.Login(ctx);
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("LOGIN", ctx, serverInterface.Login);
         }
 
-        // route to logout as a user
+        // Route to logout as a user
         static async Task LogoutRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[LOGOUT] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.Logout(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("LOGOUT", ctx, serverInterface.Logout);
         }
 
-        // route to create a new post
+        // Route to create a new post
         static async Task CreatePostRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[CREATE POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.CreatePost(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("CREATE POST", ctx, serverInterface.CreatePost);
         }
 
-        // route to getting filtered posts
+        // Route to getting filtered posts
         static async Task GetFilteredPostsRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[GET FILTERED POSTS] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.GetFilteredPosts(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("GET FILTERED POSTS", ctx, serverInterface.GetFilteredPosts);
         }
 
-        // route to getting user posts
+        // Route to getting user posts
         static async Task GetUserPostsRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[GET USER POSTS] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.GetUserPosts(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("GET USER POSTS", ctx, serverInterface.GetUserPosts);
         }
 
-        // route to edit a post
+        // Route to edit a post
         static async Task EditPostRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[EDIT POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.EditPost(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("EDIT POST", ctx, serverInterface.EditPost);
         }
 
-        // route to delete post request
+        // Route to delete a post
         static async Task DeletePostRoute(HttpContextBase ctx)
         {
-            Console.WriteLine($"[DELETE POST] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
-            string response = serverInterface.DeletePost(ctx);
-            Console.WriteLine();
-            // Send the JSON response
-            ctx.Response.ContentType = "application/json";
-            await ctx.Response.Send(response);
+            await HandleRoute("DELETE POST", ctx, serverInterface.DeletePost);
+        }
+
+        // Route to join user to post request
+        static async Task JoinUserToPostRoute(HttpContextBase ctx)
+        {
+            await HandleRoute("JOIN USER TO POST", ctx, serverInterface.JoinUserToPost);
         }
 
         /// <summary>
@@ -232,6 +202,24 @@ namespace VDS_Backend.Src.VDSServer
                 OnStop();
                 Console.WriteLine("Server has been safely stopped.");
             }
+        }
+
+        /// <summary>
+        /// Describes what a route has to do to be handled.
+        /// Calls some common methods that all route call, and then also run route specific method.
+        /// </summary>
+        /// <param name="name">name of the route</param>
+        /// <param name="ctx">the http context of the server</param>
+        /// <param name="routeMethod">the method the specific route calls to handle data passed through it</param>
+        private static async Task HandleRoute(string name, HttpContextBase ctx, Func<HttpContextBase, string> routeMethod)
+        {
+            Console.WriteLine($"[{name}] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = routeMethod(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+            
+            await ctx.Response.Send(response); // caller needs to await HandleRoute
         }
     }
 }

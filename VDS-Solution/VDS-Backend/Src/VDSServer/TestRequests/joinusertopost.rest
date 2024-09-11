@@ -1,0 +1,7 @@
+﻿POST http://localhost:9000/joinusertopost
+Content-Type: application/json
+
+{
+  "connectionKey": "J6FixEFKKOcN8GXw",
+  "id": 2
+}

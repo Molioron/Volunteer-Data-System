@@ -25,6 +25,8 @@ namespace VDS_Backend.Src.Utilities
         ServerError,
         // given arguments are invalid
         IllegalArgument,
+        // something is full and cannot add more things to it
+        ObjectFull
     }
 
     /// <summary>
@@ -44,6 +46,9 @@ namespace VDS_Backend.Src.Utilities
         public static readonly OperationStatus FAILED_GETTING_FILTERED_POSTS_ERROR = new OperationStatus(StatusCode.ServerError, "Something happened when trying to get filtered posts, my bad.");
         public static readonly OperationStatus FAILED_GETTING_USER_POSTS_ERROR = new OperationStatus(StatusCode.ServerError, "Something happened when trying to get user posts, my bad.");
         public static readonly OperationStatus POST_NOT_FOUND_ERROR = new OperationStatus(StatusCode.NotFoundError, "Couldn't find the specified post from the given connection key and post id.");
+        public static readonly OperationStatus POST_FULL_ERROR = new OperationStatus(StatusCode.ObjectFull, "Given Post is already full.");
+        public static readonly OperationStatus POST_OR_USER_NOT_FOUND_ERROR = new OperationStatus(StatusCode.NotFoundError, "Given Post or connection key could not be found.");
+        public static readonly OperationStatus FAILED_JOINING_USER_TO_POST = new OperationStatus(StatusCode.AlreadyExistsError, "Failed to join user to post, or user already has joined post.");
 
         public StatusCode Code { get; }
         public string Message { get; }
@@ -54,4 +59,9 @@ namespace VDS_Backend.Src.Utilities
             Message = message;
         }
     }
+
+    /// <summary>
+    /// thrown whenever there is an attempt to add a user to a post but it's full.
+    /// </summary>
+    internal class MaxVolunteersReachedException : Exception { }
 }
