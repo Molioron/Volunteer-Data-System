@@ -205,9 +205,29 @@ namespace VDS_Backend.Src.Models.VDS
                     return OperationStatus.SUCCESS;
                 }
             }
-            catch(ArgumentException) { return OperationStatus.POST_OR_USER_NOT_FOUND_ERROR; }
+            catch(ArgumentException) { return OperationStatus.POST_NOT_FOUND_ERROR; }
             catch(MaxVolunteersReachedException) { return OperationStatus.POST_FULL_ERROR; }
             return OperationStatus.FAILED_JOINING_USER_TO_POST;
+        }
+
+        /// <summary>
+        /// Allows a user to leave a post.
+        /// </summary>
+        /// <param name="email">email of user</param>
+        /// <param name="postId">id of post to join</param>
+        /// <returns>true if successfully user has left post, otherwise false if user already left the post
+        /// or an error has occurred along the way.</returns>
+        public OperationStatus LeavePost(string email, int postId)
+        {
+            try
+            {
+                if (handler.LeavePost(email, postId))
+                {
+                    return OperationStatus.SUCCESS;
+                }
+            }
+            catch (ArgumentException) { return OperationStatus.POST_NOT_FOUND_ERROR; }
+            return OperationStatus.FAILED_LEAVING_POST;
         }
 
         /// <summary>

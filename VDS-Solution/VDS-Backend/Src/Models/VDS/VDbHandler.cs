@@ -13,6 +13,7 @@ using VDS_Backend.Src.Models.VDS.DataTypes;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Net;
 using VDS_Backend.Src.Utilities;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace VDS_Backend.Src.Models.VDS
 {
@@ -334,7 +335,7 @@ namespace VDS_Backend.Src.Models.VDS
 
         /// <summary>
         /// Allows a user to join a post.
-        /// Throws ArgumentException if either post id or user email do not exist.
+        /// Throws ArgumentException if either post id does not exist.
         /// Throws MaxVolunteersReachedException if the post is full.
         /// </summary>
         /// <param name="email">email of user</param>
@@ -350,12 +351,6 @@ namespace VDS_Backend.Src.Models.VDS
                         where posts.Id == postId
                         select posts;
             if (!query1.Any()) { throw new ArgumentException("post id is invalid!"); }
-
-            // user email does not exists
-            var query2 = from users in Context.Users
-                        where users.Email == email
-                        select users;
-            if (!query2.Any()) { throw new ArgumentException("user email is invalid!"); }
 
             int max = GetPostMaxUsers(postId); // should not throw exception because post id passed check.
             int current = GetPostUsersCount(postId);
@@ -374,6 +369,27 @@ namespace VDS_Backend.Src.Models.VDS
             }
             catch { return false; }
         }
+
+        /// <summary>
+        /// Allows a user to leave a post.
+        /// Throws ArgumentException if either post id or user email do not exist.
+        /// </summary>
+        /// <param name="email">email of user</param>
+        /// <param name="postId">id of post to join</param>
+        /// <returns>true if successfully user has left post, otherwise false if user hasn't joined the post</returns>
+        public bool LeavePost(string email, int postId)
+        {
+            if (!HasUserJoinedPost(email, postId)) { return false; };
+
+            // post id does not exist
+            var query1 = from posts in Context.Recruitments
+                         where posts.Id == postId
+                         select posts;
+            if (!query1.Any()) { throw new ArgumentException("post id is invalid!"); }
+
+            return RemoveIfExists(Context.UserPostRelation, email, postId);
+        }
+
 
         /// <summary>
         /// Find and removes all posts in the database that have expired.
@@ -457,13 +473,35 @@ namespace VDS_Backend.Src.Models.VDS
         /// </summary>
         /// <typeparam name="T">type of entity.</typeparam>
         /// <typeparam name="K">type of key of the entity to remove.</typeparam>
-        /// <param name="dbSet">table the entity is in</param>
+        /// <param name="set">table the entity is in</param>
         /// <param name="key">the primary key of the entity</param>
         /// <returns>true if the entity was found and removed successfully, otherwise false</returns>
         private bool RemoveIfExists<T, K>(DbSet<T> set, K key) where T : class, new()
         {
             // Find the entity by key
             var entity = set.Find(key);
+
+            if (entity == null)
+            {
+                return false; // Entity does not exist
+            }
+
+            set.Remove(entity);
+            Context.SaveChanges();
+            return true; // Entity existed and was removed
+        }
+
+        /// <summary>
+        /// Removes an entity based on a given COMPOSITE primary key.
+        /// </summary>
+        /// <typeparam name="T">type of entity.</typeparam>
+        /// <param name="set">table the entity is in</param>
+        /// <param name="keyValues">the primary key of the entity</param>
+        /// <returns>true if the entity was found and removed successfully, otherwise false</returns>
+        private bool RemoveIfExists<T>(DbSet<T> set, params object[] keyValues) where T : class, new()
+        {
+            // Find the entity by composite keys
+            var entity = set.Find(keyValues);
 
             if (entity == null)
             {

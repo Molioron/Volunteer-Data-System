@@ -48,7 +48,8 @@ namespace VDS_Backend.Src.Utilities
         public static readonly OperationStatus POST_NOT_FOUND_ERROR = new OperationStatus(StatusCode.NotFoundError, "Couldn't find the specified post from the given connection key and post id.");
         public static readonly OperationStatus POST_FULL_ERROR = new OperationStatus(StatusCode.ObjectFull, "Given Post is already full.");
         public static readonly OperationStatus POST_OR_USER_NOT_FOUND_ERROR = new OperationStatus(StatusCode.NotFoundError, "Given Post or connection key could not be found.");
-        public static readonly OperationStatus FAILED_JOINING_USER_TO_POST = new OperationStatus(StatusCode.AlreadyExistsError, "Failed to join user to post, or user already has joined post.");
+        public static readonly OperationStatus FAILED_JOINING_USER_TO_POST = new OperationStatus(StatusCode.AlreadyExistsError, "Failed to join user to post, or user already has joined the post.");
+        public static readonly OperationStatus FAILED_LEAVING_POST = new OperationStatus(StatusCode.AlreadyExistsError, "Failed remove user from post, or user already has left the post.");
 
         public StatusCode Code { get; }
         public string Message { get; }

@@ -387,6 +387,43 @@ namespace VDS_Backend.Src.VDSServer
             return SafeSerializeObject(response);
         }
 
+        /// <summary>
+        /// allows a user to leave a post if they haven't left yet.
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string LeavePost(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<ConnectionKeyPostInputPayload>(body);
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                Console.WriteLine($"email: {email}, id: {input.Id}");
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    status = dbInterface.LeavePost(email, input.Id);
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+            };
+            return SafeSerializeObject(response);
+        }
+
 
 
         /// <summary>

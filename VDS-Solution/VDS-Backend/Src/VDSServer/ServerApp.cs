@@ -49,7 +49,8 @@ namespace VDS_Backend.Src.VDSServer
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/getuserposts", GetUserPostsRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/editpost", EditPostRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/deletepost", DeletePostRoute)
-                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/joinusertopost", JoinUserToPostRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/joinpost", JoinUserToPostRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/leavepost", LeavePostRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();
             serverInterface = new ServerInterface(db);
@@ -186,6 +187,12 @@ namespace VDS_Backend.Src.VDSServer
         static async Task JoinUserToPostRoute(HttpContextBase ctx)
         {
             await HandleRoute("JOIN USER TO POST", ctx, serverInterface.JoinUserToPost);
+        }
+
+        // Route to leave post request
+        static async Task LeavePostRoute(HttpContextBase ctx)
+        {
+            await HandleRoute("LEAVE POST", ctx, serverInterface.LeavePost);
         }
 
         /// <summary>

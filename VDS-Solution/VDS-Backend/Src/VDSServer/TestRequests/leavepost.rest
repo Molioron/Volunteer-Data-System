@@ -1,0 +1,7 @@
+﻿POST http://localhost:9000/leavepost
+Content-Type: application/json
+
+{
+  "connectionKey": "hhKB08wNH7VFV2x4",
+  "id": 2
+}
