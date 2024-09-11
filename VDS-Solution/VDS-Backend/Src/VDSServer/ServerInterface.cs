@@ -211,10 +211,19 @@ namespace VDS_Backend.Src.VDSServer
             VDbHandler.PostInfo[] posts = [];
             if (input != null)
             {
-                var opRes = dbInterface.GetFilteredPosts(input.volunteerAreas, input.jobTypes,
-                    input.initialDate, input.endDate, input.dateFilterType);
-                status = opRes.Item1;
-                posts = opRes.Item2;
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    var opRes = dbInterface.GetFilteredPosts(input.VolunteerAreas, input.JobTypes,
+                    input.InitialDate, input.EndDate, input.DateFilterType, email);
+                    status = opRes.Item1;
+                    posts = opRes.Item2;
+                }
+                
 
             }
 

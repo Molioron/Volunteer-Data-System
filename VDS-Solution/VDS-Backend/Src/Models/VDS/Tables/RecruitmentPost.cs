@@ -55,5 +55,13 @@ namespace VDS_Backend.Src.Models.VDS.Tables
         /// Negative number means no limit.
         /// </summary>
         public int MaxVolunteers {  get; set; }
+
+        
+        public override string ToString()
+        {
+            return $"id: {Id}, email: {UserEmail}, title: {Title}, description: {Description}, address: {Address}" +
+                $"location: {Location}, job: {Job}, initial date: {InitialDate}, last date: {LastDate}," +
+                $"max volunteers: {MaxVolunteers}";
+        }
     }
 }

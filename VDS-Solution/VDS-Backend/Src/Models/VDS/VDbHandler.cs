@@ -127,10 +127,13 @@ namespace VDS_Backend.Src.Models.VDS
         /// <exception cref="ArgumentException">if initialDate is after endDate</exception>
         /// /// <exception cref="ArgumentNullException">failed to parse data from db</exception>
         public PostInfo[] GetFilteredPosts(Location[] volunteerAreas,
-            Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType)
+            Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType, string email)
         {
-            if (initialDate > endDate) // sanity check: initial date must not be after end date
-            { throw new ArgumentException("initialDate must not be after endDate"); }
+            if (initialDate is not null && endDate is not null)
+            {
+                if (initialDate > endDate) // sanity check: initial date must not be after end date
+                { throw new ArgumentException("initialDate must not be after endDate"); }
+            }
 
             // only posts
             var query = Context.Recruitments.Include(r => r.User).AsQueryable();
@@ -177,8 +180,22 @@ namespace VDS_Backend.Src.Models.VDS
             var finalCondition = CombineConditions(conditions);
             query = query.Where(finalCondition);
 
+            // determines if the user that used the get filtered posts method,
+            // also joined the given post with given id.
+            // true if the user has joined the post, otherwise false.
+            Func<int, bool> isUserInPost = (int postId) =>
+            { 
+                var uipQuery = from upr in Context.UserPostRelation
+                               where upr.PostId == postId && upr.UserEmail == email
+                               select upr;
+                return uipQuery.Any();
+            };
+
+
+            // posts as list and out of query.
+            var postsList = query.ToList();
             // result of the query
-            var result = query.Select(posts => new PostInfo
+            var result = postsList.Select(posts => new PostInfo
             {
                 Id = posts.Id,
                 Title = posts.Title,
@@ -188,7 +205,9 @@ namespace VDS_Backend.Src.Models.VDS
                 Job = posts.Job,
                 InitialDate = posts.InitialDate,
                 LastDate = posts.LastDate,
-                PhoneNumber = posts.User.PhoneNumber
+                PhoneNumber = posts.User.PhoneNumber,
+                IsUserInPost = isUserInPost(posts.Id) // this can only be processed in memory, not in query.
+
             }).ToArray();
             return result;
         }
@@ -470,6 +489,8 @@ namespace VDS_Backend.Src.Models.VDS
             public DateTime InitialDate { get; set; }
             public DateTime LastDate { get; set; }
             public string PhoneNumber { get; set; }
+
+            public bool IsUserInPost {  get; set; }
         }
     }
 

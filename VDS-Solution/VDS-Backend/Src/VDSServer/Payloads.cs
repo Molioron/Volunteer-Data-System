@@ -63,11 +63,12 @@ namespace VDS_Backend.Src.VDSServer
         /// </summary>
         private class GetFilteredPostsInputPayload
         {
-            public Location[] volunteerAreas {  get; set; }
-            public Job[] jobTypes {  get; set; }
-            public DateTime? initialDate { get; set; }
-            public DateTime? endDate { get; set; }
-            public DateFilterType? dateFilterType { get; set; }
+            public string ConnectionKey { get; set; }
+            public Location[] VolunteerAreas {  get; set; }
+            public Job[] JobTypes {  get; set; }
+            public DateTime? InitialDate { get; set; }
+            public DateTime? EndDate { get; set; }
+            public DateFilterType? DateFilterType { get; set; }
         }
 
         /// <summary>

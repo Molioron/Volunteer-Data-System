@@ -102,21 +102,24 @@ namespace VDS_Backend.Src.Models.VDS
         /// <param name="initialDate">initial date to look for</param>
         /// <param name="endDate">last date to look for</param>
         /// <param name="dateFilterType">type of date filtering: Contains or Intersects</param>
+        /// <param name="email"> the email of the user getting filtered posts</param>
         /// <returns>tuple (status, filtered posts)</returns>
         public (OperationStatus, VDbHandler.PostInfo[]) GetFilteredPosts(Location[] volunteerAreas,
-            Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType)
+            Job[] jobTypes, DateTime? initialDate, DateTime? endDate, DateFilterType? dateFilterType, string email)
         {
             try
             {
-                var result = handler.GetFilteredPosts(volunteerAreas, jobTypes, initialDate, endDate, dateFilterType);
+                var result = handler.GetFilteredPosts(volunteerAreas, jobTypes, initialDate, endDate, dateFilterType, email);
                 return (OperationStatus.SUCCESS, result);
             }
             catch (NotImplementedException)
                 { return (OperationStatus.ILLEGAL_DATE_FILTER_TYPE_ERROR, []); }
             catch (ArgumentNullException)
             { return (OperationStatus.FAILED_DB_PARSE_ERROR, []); }
-            catch (ArgumentException)
-            { return (OperationStatus.ILLEGAL_DATES_ERROR, []); }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine($"{e.Message}, {e.StackTrace}");
+                return (OperationStatus.ILLEGAL_DATES_ERROR, []); }
             catch (Exception ex) { Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 return (OperationStatus.FAILED_GETTING_FILTERED_POSTS_ERROR, []);

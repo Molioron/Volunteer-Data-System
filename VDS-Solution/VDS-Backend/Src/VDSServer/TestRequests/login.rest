@@ -2,6 +2,6 @@
 Content-Type: application/json
 
 {
-  email: "squidtent@gmail.com",
-  password: "GeniusSquid12345"
+  email: "johndoe@gmail.com",
+  password: "JohnDoe123"
 }

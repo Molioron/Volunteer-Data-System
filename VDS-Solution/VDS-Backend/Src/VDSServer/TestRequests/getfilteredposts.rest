@@ -3,8 +3,9 @@ Content-Type: application/json
 
 {
   "volunteerAreas": ["North"],
-  "jobTypes": ["Agriculture"],
+  "jobTypes": [],
   "initialDate": "2024-06-14T00:00:00Z",
-  "lastDate": "2024-10-14T23:59:59Z",
-  "dateFilterType": "Contains"
+  "endDate": "2024-10-14T00:00:00Z",
+  "dateFilterType": "Contains",
+  "connectionKey": "x75XJZvHQbyQoCGs"
 }
