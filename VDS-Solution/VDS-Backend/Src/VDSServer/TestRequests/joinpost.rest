@@ -2,6 +2,6 @@
 Content-Type: application/json
 
 {
-  "connectionKey": "J6FixEFKKOcN8GXw",
+  "connectionKey": "pGao44wISlfQVhR1",
   "id": 2
 }

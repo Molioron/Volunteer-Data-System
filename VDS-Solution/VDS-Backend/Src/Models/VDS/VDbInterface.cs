@@ -177,7 +177,7 @@ namespace VDS_Backend.Src.Models.VDS
         /// <returns>success, or post not found</returns>
         public OperationStatus DeletePost(string email, int id)
         {
-            // post edited successfully
+            // post found successfully
             if (handler.FindPostWithOwner(email, id))
             {
                 // attempt deletion only if post with owner
@@ -228,6 +228,26 @@ namespace VDS_Backend.Src.Models.VDS
             }
             catch (ArgumentException) { return OperationStatus.POST_NOT_FOUND_ERROR; }
             return OperationStatus.FAILED_LEAVING_POST;
+        }
+
+        /// <summary>
+        /// returns the volunteers that joined a given post.
+        /// DOES make sure that the user is the owner of the post
+        /// </summary>
+        /// <param name="email">user email who owns the post</param>
+        /// <param name="id">post id</param>
+        /// <returns>status code of success or errors, list of volunteers</returns>
+        public (OperationStatus, VDbHandler.VolunteerInfo[]) ViewVolunteers(string email, int id)
+        {
+            // post found successfully
+            if (handler.FindPostWithOwner(email, id))
+            {
+                // attempt reading only if post with owner
+                var volunteers = handler.ViewVolunteers(id);
+
+                return (OperationStatus.SUCCESS, volunteers);
+            }
+            return (OperationStatus.POST_NOT_FOUND_ERROR, []);
         }
 
         /// <summary>

@@ -330,7 +330,6 @@ namespace VDS_Backend.Src.VDSServer
             if (input != null)
             {
                 string? email = GetEmailFromKey(input.ConnectionKey);
-                Console.WriteLine($"email: {email}, id: {input.Id}");
                 if (email == null)
                 {
                     status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
@@ -367,7 +366,6 @@ namespace VDS_Backend.Src.VDSServer
             if (input != null)
             {
                 string? email = GetEmailFromKey(input.ConnectionKey);
-                Console.WriteLine($"email: {email}, id: {input.Id}");
                 if (email == null)
                 {
                     status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
@@ -404,7 +402,6 @@ namespace VDS_Backend.Src.VDSServer
             if (input != null)
             {
                 string? email = GetEmailFromKey(input.ConnectionKey);
-                Console.WriteLine($"email: {email}, id: {input.Id}");
                 if (email == null)
                 {
                     status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
@@ -420,6 +417,48 @@ namespace VDS_Backend.Src.VDSServer
             var response = new
             {
                 operationStatus = SafeSerializeObject(status),
+            };
+            return SafeSerializeObject(response);
+        }
+
+        /// <summary>
+        /// returns the volunteers of a given post (verifies user asking is the owner of the post)
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <returns>responses</returns>
+        public string ViewVolunteers(HttpContextBase ctx)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<ConnectionKeyPostInputPayload>(body);
+
+            // volunteers list from the db, default is empty
+            VDbHandler.VolunteerInfo[] volunteers = [];
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    var result = dbInterface.ViewVolunteers(email, input.Id);
+                    status = result.Item1;
+                    volunteers = result.Item2;
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status),
+                volunteers = volunteers
             };
             return SafeSerializeObject(response);
         }

@@ -390,6 +390,28 @@ namespace VDS_Backend.Src.Models.VDS
             return RemoveIfExists(Context.UserPostRelation, email, postId);
         }
 
+        /// <summary>
+        /// returns the volunteers that joined a post.
+        /// Does NOT verify that user is owner of post.
+        /// Does NOT verify that the caller is the owner or postId is real.
+        /// </summary>
+        /// <param name="postId">id of post to join</param>
+        /// <returns>list of volunteers that joined the post.</returns>
+        public VolunteerInfo[] ViewVolunteers(int postId)
+        {
+
+            var volunteers = Context.UserPostRelation
+                .Include(upr => upr.User)
+                .Where(upr => upr.PostId == postId)
+                .Select(upr => new VolunteerInfo
+                {
+                    FirstName = upr.User.FirstName,
+                    LastName = upr.User.LastName
+                })
+                .ToArray();
+            return volunteers;
+        }
+
 
         /// <summary>
         /// Find and removes all posts in the database that have expired.
@@ -529,6 +551,15 @@ namespace VDS_Backend.Src.Models.VDS
             public string PhoneNumber { get; set; }
 
             public bool IsUserInPost {  get; set; }
+        }
+
+        /// <summary>
+        /// info about volunteers that is returned to client
+        /// </summary>
+        public class VolunteerInfo
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
     }
 
