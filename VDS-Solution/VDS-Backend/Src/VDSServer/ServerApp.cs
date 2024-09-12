@@ -18,6 +18,7 @@ namespace VDS_Backend.Src.VDSServer
     /// </summary>
     internal class ServerApp
     {
+        private static readonly string RELATIVE_CREDENTIALS_PATH = "Assets/Credentials/SmtpServer.info";
         /// <summary>
         /// The web server instance 
         /// </summary>
@@ -26,8 +27,14 @@ namespace VDS_Backend.Src.VDSServer
         /// the server side of the interface that sends/receives data from the database
         /// </summary>
         private static ServerInterface serverInterface;
-
+        /// <summary>
+        /// Server for cron jobs
+        /// </summary>
         private static BackgroundJobServer hangfireServer;
+        /// <summary>
+        /// Handles mails (sends mails)
+        /// </summary>
+        private static MailHandler mailHandler;
 
 
         /// <summary>
@@ -38,7 +45,18 @@ namespace VDS_Backend.Src.VDSServer
         /// <param name="port">the port of the server</param>
         public static async void Run(string hostname, int port)
         {
-            Console.WriteLine($"Running the server...\nYou may connect at \"http://{hostname}:{port}\".\n");
+            Console.WriteLine("Setting up MailHandler...");
+            string credPath = Utils.AbsPathFromRoot(RELATIVE_CREDENTIALS_PATH);
+            string? key = null;
+            while(key is null || key == "")
+            {
+                Console.Write("Please enter credentials key: ");
+                key = Console.ReadLine();
+            }
+            try { mailHandler = new MailHandler(credPath, key); }
+            catch(Exception e) { Console.WriteLine($"Failed to initialize MailHandler! {e.Message}."); return; };
+
+            Console.WriteLine($"\n\nRunning the server...\nYou may connect at \"http://{hostname}:{port}\".\n");
             
             server = new HostBuilder(hostname, port, false, DefaultRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/signup", SignupRoute)

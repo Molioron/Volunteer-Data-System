@@ -117,3 +117,7 @@ C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8
 C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.MemoryStorage.dll
 C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.NetCore.dll
 C:\Users\DELL\code\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\Hangfire.SqlServer.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\MailKit.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\MimeKit.dll
+D:\Program Files\C# Projects\Repos\Molioron\Volunteer-Data-System\VDS-Solution\VDS-Backend\bin\Debug\net8.0\System.Formats.Asn1.dll

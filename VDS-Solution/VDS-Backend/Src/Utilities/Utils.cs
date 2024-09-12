@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace VDS_Backend.Src.Utilities
 {
@@ -62,6 +63,105 @@ namespace VDS_Backend.Src.Utilities
             DateTime utcTime = localTime.ToUniversalTime();
 
             return utcTime;
+        }
+
+
+        /// <summary>
+        /// Encrypts a string with a given key
+        /// </summary>
+        /// <param name="key">symmetric key</param>
+        /// <param name="plainText">text to encrypt</param>
+        /// <returns>the attempt result of encryption</returns>
+        public static string EncryptString(string key, string plainText)
+        {
+            byte[] iv;
+            byte[] array;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key.PadRight(32, '0')); // Ensure key is 32 bytes long for AES-256
+                aes.GenerateIV();
+                iv = aes.IV; // Randomly generate an IV
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                        {
+                            streamWriter.Write(plainText);
+                        }
+
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            // Prepend the IV to the encrypted data
+            byte[] result = new byte[iv.Length + array.Length];
+            Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
+            Buffer.BlockCopy(array, 0, result, iv.Length, array.Length);
+
+            return Convert.ToBase64String(result);
+        }
+
+        /// <summary>
+        /// Decrypts a given string from a given key
+        /// </summary>
+        /// <param name="key">symmetric key</param>
+        /// <param name="cipherText">ciphered text to decrypt</param>
+        /// <returns>the attempt result of decrypting the string</returns>
+        public static string DecryptString(string key, string cipherText)
+        {
+            byte[] fullCipher = Convert.FromBase64String(cipherText);
+
+            byte[] iv = new byte[16];
+            byte[] cipher = new byte[fullCipher.Length - iv.Length];
+
+            // Extract the IV from the fullCipher (first 16 bytes)
+            Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
+            // Extract the actual cipher (the rest of the data)
+            Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, cipher.Length);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key.PadRight(32, '0')); // Ensure key is 32 bytes long for AES-256
+                aes.IV = iv;
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream(cipher))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader(cryptoStream))
+                        {
+                            return streamReader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a secure random string key of specified length
+        /// </summary>
+        /// <param name="lengthInBytes">length of the generated key</param>
+        /// <returns>the generated key</returns>
+        /// <exception cref="ArgumentException">if the length is a non positive number</exception>
+        public static string GenerateSecureKey(int lengthInBytes)
+        {
+            if (lengthInBytes <= 0)
+                throw new ArgumentException("Length must be a positive number", nameof(lengthInBytes));
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                byte[] keyBytes = new byte[lengthInBytes];
+                rng.GetBytes(keyBytes);
+                return Convert.ToBase64String(keyBytes);
+            }
         }
     }
 }
