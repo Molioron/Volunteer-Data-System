@@ -463,6 +463,46 @@ namespace VDS_Backend.Src.VDSServer
             return SafeSerializeObject(response);
         }
 
+        /// <summary>
+        /// broadcasts a mail to the entirety of the volunteer team of a given post and post owner
+        /// </summary>
+        /// <param name="ctx">the http context</param>
+        /// <param name="mailer">the mail handler component</param>
+        /// <returns>responses</returns>
+        public async Task<string> SendMail(HttpContextBase ctx, MailHandler mailer)
+        {
+            // unload the payload
+            string body = ctx.Request.DataAsString;
+            var input = SafeDeserializeObjectToJson<SendMailInputPayload>(body);
+
+            // volunteers list from the db, default is empty
+            VDbHandler.VolunteerInfo[] volunteers = [];
+
+            // result status
+            // default status unknown payload
+            OperationStatus status = OperationStatus.UNKNOWN_PAYLOAD_ERROR;
+            if (input != null)
+            {
+                string? email = GetEmailFromKey(input.ConnectionKey);
+                if (email == null)
+                {
+                    status = OperationStatus.INVALID_CONNECTION_KEY_ERROR;
+                }
+                else
+                {
+                    status = await dbInterface.BroadcastEmail(mailer, email, input.Id, input.Content);
+                }
+
+            }
+
+            // the response sent due to the request
+            var response = new
+            {
+                operationStatus = SafeSerializeObject(status)
+            };
+            return SafeSerializeObject(response);
+        }
+
 
 
         /// <summary>

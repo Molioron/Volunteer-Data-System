@@ -1,0 +1,8 @@
+﻿POST http://localhost:9000/sendmail
+Content-Type: application/json
+
+{
+  "connectionKey": "f83cZ9X3RBe0b7Y8",
+  "id": 1,
+  "content": "Dear volunteers,\nThank you for helping me cook for my family!\n\nYours truly,\nJohn Doe"
+}

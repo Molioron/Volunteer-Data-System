@@ -412,6 +412,41 @@ namespace VDS_Backend.Src.Models.VDS
             return volunteers;
         }
 
+        /// <summary>
+        /// HELPER METHOD, UNSAFE TO RETURN RAW TO CLIENT.
+        /// returns an array of all users who belong to a post.
+        /// Specifically, contains the first name, last name, and email of the users
+        /// </summary>
+        /// <param name="postId">id of the post</param>
+        /// <returns>array of all users who belong/joined the post.</returns>
+        public VolunteerInfoExtended[] ViewVolunteersExtended(int postId)
+        {
+            var volunteers = Context.UserPostRelation
+               .Include(upr => upr.User)
+               .Where(upr => upr.PostId == postId)
+               .Select(upr => new VolunteerInfoExtended
+               {
+                   FirstName = upr.User.FirstName,
+                   LastName = upr.User.LastName,
+                   Email = upr.User.Email
+               })
+               .ToArray();
+            return volunteers;
+        }
+
+        /// <summary>
+        /// Returns the title of the post from the given post id
+        /// </summary>
+        /// <param name="postId">id of the post to get the title of</param>
+        /// <returns>the title of the given post, or null if it couldn't be found</returns>
+        public string? GetPostTitle(int postId)
+        {
+            var query = from posts in Context.Recruitments
+                       where posts.Id == postId
+                       select posts.Title;
+            return (query.Any()) ? query.First() : null;
+        }
+
 
         /// <summary>
         /// Find and removes all posts in the database that have expired.
@@ -560,6 +595,18 @@ namespace VDS_Backend.Src.Models.VDS
         {
             public string FirstName { get; set; }
             public string LastName { get; set; }
+        }
+
+        /// <summary>
+        /// info about volunteers that is NOT returned to the client,
+        /// and is used locally.
+        /// </summary>
+        public class VolunteerInfoExtended
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+
+            public string Email { get; set; }
         }
     }
 

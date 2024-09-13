@@ -11,9 +11,10 @@ namespace VDS_Backend.Src.VDSServer
     internal class MailHandler : IDisposable
     {
         /// <summary>
-        /// the name of the broadcasting email system
+        /// the prefix of this volunteer system. concatenate after the specific sub system.
+        /// e.g: Broadcaster
         /// </summary>
-        public static readonly string SYSTEM_NAME = "VDS-Broadcaster";
+        public static readonly string SYSTEM_PREFIX = "VDS-";
 
         /// <summary>
         /// the smtp client to send emails through
@@ -35,16 +36,33 @@ namespace VDS_Backend.Src.VDSServer
         }
 
         /// <summary>
+        /// Asynchronously sends an email in the broadcast format.
+        /// </summary>
+        /// <param name="sender">name of the sender</param>
+        /// <param name="postName">name of the post the sender belongs to</param>
+        /// <param name="recipient">the email of the recipient</param>
+        /// <param name="recipientName">the name of the recipient</param>
+        /// <param name="body">the body of the message</param>
+        /// <returns></returns>
+        public async Task SendBroadcastAsync(string sender, string postName, string recipient, string recipientName, string body)
+        {
+            string subject = $"{sender} has sent you a message!";
+            string new_body = $"Dear {recipientName},\n{sender} from \"{postName}\" has broadcasted:\n\n" + body;
+            await SendEmailAsync("Broadcaster",recipient,subject,new_body);
+        }
+
+        /// <summary>
         /// Sends an email to the specified recipient.
         /// </summary>
+        /// <param name="subSystemName">name of the sub system sending the email (e.g: Broadcaster).</param>
         /// <param name="recipient">Recipient's email address.</param>
         /// <param name="subject">Email subject.</param>
         /// <param name="body">Email body content.</param>
         /// <returns></returns>
-        public async Task SendEmailAsync(string recipient, string subject, string body)
+        public async Task SendEmailAsync(string subSystemName, string recipient, string subject, string body)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(SYSTEM_NAME, smtpOwnerEmail));
+            message.From.Add(new MailboxAddress(SYSTEM_PREFIX + subSystemName, smtpOwnerEmail));
             message.To.Add(MailboxAddress.Parse(recipient));
             message.Subject = subject;
 

@@ -1,8 +1,10 @@
 ﻿using System.Net;
+using System.Reflection.Metadata.Ecma335;
 using VDS_Backend.Src.Models.VDS.Contexts;
 using VDS_Backend.Src.Models.VDS.DataTypes;
 using VDS_Backend.Src.Models.VDS.Tables;
 using VDS_Backend.Src.Utilities;
+using VDS_Backend.Src.VDSServer;
 
 namespace VDS_Backend.Src.Models.VDS
 {
@@ -207,7 +209,7 @@ namespace VDS_Backend.Src.Models.VDS
             }
             catch(ArgumentException) { return OperationStatus.POST_NOT_FOUND_ERROR; }
             catch(MaxVolunteersReachedException) { return OperationStatus.POST_FULL_ERROR; }
-            return OperationStatus.FAILED_JOINING_USER_TO_POST;
+            return OperationStatus.FAILED_JOINING_USER_TO_POST_ERROR;
         }
 
         /// <summary>
@@ -227,7 +229,7 @@ namespace VDS_Backend.Src.Models.VDS
                 }
             }
             catch (ArgumentException) { return OperationStatus.POST_NOT_FOUND_ERROR; }
-            return OperationStatus.FAILED_LEAVING_POST;
+            return OperationStatus.FAILED_LEAVING_POST_ERROR;
         }
 
         /// <summary>
@@ -248,6 +250,40 @@ namespace VDS_Backend.Src.Models.VDS
                 return (OperationStatus.SUCCESS, volunteers);
             }
             return (OperationStatus.POST_NOT_FOUND_ERROR, []);
+        }
+
+        /// <summary>
+        /// Broadcast an email to the entirety of the volunteer team of a given post.
+        /// </summary>
+        /// <param name="mailer"> the handler used to send mails</param>
+        /// <param name="email">email of the post owner (assumed).</param>
+        /// <param name="postId">id of the post to broadcast the email to the team.</param>
+        /// <param name="content">the content of the email.</param>
+        /// <returns>success on success, otherwise errors</returns>
+        public async Task<OperationStatus> BroadcastEmail(MailHandler mailer, string email, int postId, string content)
+        {
+            // user has to be the owner of the post
+            if(!handler.FindPostWithOwner(email, postId)) { return OperationStatus.POST_NOT_FOUND_ERROR; }
+
+            User? recruiter = handler.GetUser(email); // this should not be null because email was found owner.
+            if (recruiter == null) { return OperationStatus.INVALID_CONNECTION_KEY_ERROR; }
+            var volunteers = handler.ViewVolunteersExtended(postId);
+            string? postTitle = handler.GetPostTitle(postId); // shouldn't be null since owner was found.
+            if (postTitle == null) { return OperationStatus.POST_NOT_FOUND_ERROR; }
+
+            string sender = $"{recruiter.FirstName} {recruiter.LastName}";
+
+            // returns error only if at least one user have not successfulyl received email.
+            // even if one failed, attempts to message to all volunteers.
+            bool allEmailsSent = true;
+            foreach (var volunteer in volunteers)
+            {
+                string recipientName = $"{volunteer.FirstName} {volunteer.LastName}";
+                try { await mailer.SendBroadcastAsync(sender, postTitle, volunteer.Email, recipientName, content); }
+                catch { allEmailsSent = false; }
+            }
+            if (allEmailsSent) { return OperationStatus.SUCCESS; }
+            else { return OperationStatus.FAILED_BROADCASTING_MSG_ERROR; }
         }
 
         /// <summary>

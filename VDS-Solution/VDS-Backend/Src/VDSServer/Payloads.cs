@@ -96,5 +96,15 @@ namespace VDS_Backend.Src.VDSServer
             public string ConnectionKey { get; set; }
             public int Id { get; set; }
         }
+
+        /// <summary>
+        /// input received from send mail request.
+        /// </summary>
+        private class SendMailInputPayload
+        {
+            public string ConnectionKey { get; set; }
+            public int Id { get; set; }
+            public string Content {  get; set; }
+        }
     }
 }

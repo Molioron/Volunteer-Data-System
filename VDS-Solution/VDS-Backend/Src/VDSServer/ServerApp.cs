@@ -70,6 +70,7 @@ namespace VDS_Backend.Src.VDSServer
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/joinpost", JoinUserToPostRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/leavepost", LeavePostRoute)
                 .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/viewvolunteers", ViewVolunteersRoute)
+                .MapStaticRoute(WatsonWebserver.Core.HttpMethod.POST, "/sendmail", SendMailRoute)
                 .Build();
             await using VDSContext db = new VDSContextSQLite();
             serverInterface = new ServerInterface(db);
@@ -220,6 +221,19 @@ namespace VDS_Backend.Src.VDSServer
             await HandleRoute("VIEW VOLUNTEERS", ctx, serverInterface.ViewVolunteers);
         }
 
+        // Route to broadcast mail to all volunteers of a post
+        static async Task SendMailRoute(HttpContextBase ctx)
+        {
+            // Define the asynchronous route method
+            var method = async (HttpContextBase context) =>
+            {
+                return await serverInterface.SendMail(context, mailHandler);
+            };
+
+            // Call the HandleRoute method with the async lambda
+            await HandleRoute("Send Mail", ctx, method);
+        }
+
         /// <summary>
         /// Safely stop the server, if it has been initialized with Run().
         /// </summary>
@@ -253,5 +267,25 @@ namespace VDS_Backend.Src.VDSServer
             
             await ctx.Response.Send(response); // caller needs to await HandleRoute
         }
+
+        /// <summary>
+        /// Describes what a route has to do to be handled.
+        /// Calls some common methods that all route call, and then also run route specific ASYNC method.
+        /// </summary>
+        /// <param name="name">name of the route</param>
+        /// <param name="ctx">the http context of the server</param>
+        /// <param name="routeMethod">the method the specific route calls to handle data passed through it</param>
+        private static async Task HandleRoute(string name, HttpContextBase ctx, Func<HttpContextBase, Task<string>> routeMethod)
+        {
+            Console.WriteLine($"[{name}] {ctx.Request.Source.IpAddress}:\n\t{ctx.Request.DataAsString}.");
+            string response = await routeMethod(ctx);
+            Console.WriteLine();
+            // Send the JSON response
+            ctx.Response.ContentType = "application/json";
+
+            await ctx.Response.Send(response); // caller needs to await HandleRoute
+        }
+
+
     }
 }
