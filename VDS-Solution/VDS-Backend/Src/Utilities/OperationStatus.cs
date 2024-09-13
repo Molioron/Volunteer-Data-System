@@ -35,6 +35,7 @@ namespace VDS_Backend.Src.Utilities
     internal class OperationStatus
     {
         public static readonly OperationStatus SUCCESS = new OperationStatus(StatusCode.Success, "Success.");
+        public static readonly OperationStatus NOTIFICATION_SEMI_SUCCESS = new OperationStatus(StatusCode.Success, "Successfully edited the post, but not all volunteers received notification.");
         public static readonly OperationStatus SIGNUP_USER_EXISTS_ERROR = new OperationStatus(StatusCode.AlreadyExistsError, "User already exists.");
         public static readonly OperationStatus LOGIN_WRONG_EMAIL_PASSWORD_ERROR = new OperationStatus(StatusCode.CredentialsError, "Wrong email or password.");
         public static readonly OperationStatus UNKNOWN_PAYLOAD_ERROR = new OperationStatus(StatusCode.ServerError, "Failed parse http(s) body.");

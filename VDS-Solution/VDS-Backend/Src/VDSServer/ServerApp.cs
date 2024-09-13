@@ -194,7 +194,12 @@ namespace VDS_Backend.Src.VDSServer
         // Route to edit a post
         static async Task EditPostRoute(HttpContextBase ctx)
         {
-            await HandleRoute("EDIT POST", ctx, serverInterface.EditPost);
+            // Define the asynchronous route method
+            var method = async (HttpContextBase context) =>
+            {
+                return await serverInterface.EditPost(context, mailHandler);
+            };
+            await HandleRoute("EDIT POST", ctx, method);
         }
 
         // Route to delete a post
@@ -244,6 +249,7 @@ namespace VDS_Backend.Src.VDSServer
                 server.Stop(); // stop webserver
                 server.Dispose();
                 hangfireServer.Dispose(); // stop the hangfire server
+                mailHandler.Dispose(); // stop mailHandler
                 serverInterface.ClearConnections();
                 OnStop();
                 Console.WriteLine("Server has been safely stopped.");

@@ -2,13 +2,13 @@
 Content-Type: application/json
 
 {
-  "connectionkey": "WsyldYlt7lOpeRYV",
-  "id": 1,
-  "title": "john's new recruitment 8",
-  "description": "looking for cooks",
-  "address": "somewhere up north",
-  "volunteerArea": "North",
-  "jobType": "Cooking",
+  "connectionkey": "FYR88m7kWtyHkjHa",
+  "id": 2,
+  "title": "john's new recruitment edited",
+  "description": "looking for drivers",
+  "address": "somewhere down south",
+  "volunteerArea": "South",
+  "jobType": "Transportation",
   "initialDate": "2024-08-14T00:00:00Z",
-  "lastDate": "2024-08-16T23:59:59Z"
+  "lastDate": "2024-09-29T23:59:59Z"
 }

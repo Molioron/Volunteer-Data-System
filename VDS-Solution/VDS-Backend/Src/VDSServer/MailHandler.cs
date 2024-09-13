@@ -15,6 +15,10 @@ namespace VDS_Backend.Src.VDSServer
         /// e.g: Broadcaster
         /// </summary>
         public static readonly string SYSTEM_PREFIX = "VDS-";
+        /// <summary>
+        /// the name of this volunteer system
+        /// </summary>
+        public static readonly string SYSTEM_NAME = "VDS";
 
         /// <summary>
         /// the smtp client to send emails through
@@ -49,6 +53,23 @@ namespace VDS_Backend.Src.VDSServer
             string subject = $"{sender} has sent you a message!";
             string new_body = $"Dear {recipientName},\n{sender} from \"{postName}\" has broadcasted:\n\n" + body;
             await SendEmailAsync("Broadcaster",recipient,subject,new_body);
+        }
+
+        /// <summary>
+        /// Asynchronously sends an email in the notification format.
+        /// The notifier notifies about updates about posts (e.g: edited posts)
+        /// </summary>
+        /// <param name="sender">name of the sender</param>
+        /// <param name="postName">name of the post the sender belongs to</param>
+        /// <param name="recipient">the email of the recipient</param>
+        /// <param name="recipientName">the name of the recipient</param>
+        /// <returns></returns>
+        public async Task SendNotificationAsync(string sender, string postName, string recipient, string recipientName)
+        {
+            string subject = $"\"{postName}\" has been updated";
+            string new_body = $"Dear {recipientName},\n{sender} has updated the post \"{postName}\"." +
+                $"\nIt is recommended that you take a look at what changed.\n\n~ The {SYSTEM_NAME} Team.";
+            await SendEmailAsync("Notifier", recipient, subject, new_body);
         }
 
         /// <summary>

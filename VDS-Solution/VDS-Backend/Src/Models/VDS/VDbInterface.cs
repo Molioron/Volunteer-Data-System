@@ -149,6 +149,7 @@ namespace VDS_Backend.Src.Models.VDS
         /// <summary>
         /// Edit a post with new fields
         /// </summary>
+        /// <param name="mailer">the mail handler component</param>
         /// <param name="email">user owner email</param>
         /// <param name="id">post id</param>
         /// <param name="title">new title</param>
@@ -159,14 +160,40 @@ namespace VDS_Backend.Src.Models.VDS
         /// <param name="initialDate">new initial date</param>
         /// <param name="endDate">new end date</param>
         /// <returns>success or post not found error</returns>
-        public OperationStatus EditPost(string email, int id, string title,
+        public async Task<OperationStatus> EditPost(MailHandler mailer, string email, int id, string title,
             string description, string address, Location volunteerArea, Job jobType, DateTime initialDate, DateTime endDate)
         {
+            // NOTICE: edit post only edits the post if the email is of the user that owns the post!!!
             // post editted successfully
             if (handler.EditPost(email, id, title, description, address, volunteerArea, jobType,
                 initialDate, endDate))
             {
-                return OperationStatus.SUCCESS;
+                User? recruiter = handler.GetUser(email); // should never be null, because edit post
+                // determines that the user exists.
+                if (recruiter is null) { return OperationStatus.INVALID_CONNECTION_KEY_ERROR; }
+                var volunteers = handler.ViewVolunteersExtended(id);
+                string? postTitle = handler.GetPostTitle(id); // should never be null, because edit post
+                // determines that the post exists under ownership of email user.
+                if (postTitle is null) { return OperationStatus.POST_NOT_FOUND_ERROR; }
+
+                // the status of the edit operation, default is success
+                // if not all recipients received mail, status is success but with message
+                // that not all recipients have the received the notification mail.
+                OperationStatus status = OperationStatus.SUCCESS;
+
+                // send message to each volunteer
+                foreach(var volunteer in volunteers)
+                {
+                    try
+                    {
+                        string sender = $"{recruiter.FirstName} {recruiter.LastName}";
+                        string recipientName = $"{volunteer.FirstName} {volunteer.LastName}";
+                        await mailer.SendNotificationAsync(sender, postTitle, volunteer.Email, recipientName);
+                    }
+                    catch { status = OperationStatus.NOTIFICATION_SEMI_SUCCESS; } // at least one mail failed.
+                }
+
+                return status;
             }
             return OperationStatus.POST_NOT_FOUND_ERROR;
         }

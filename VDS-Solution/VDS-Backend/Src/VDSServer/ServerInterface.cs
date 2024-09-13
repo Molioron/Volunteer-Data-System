@@ -280,8 +280,9 @@ namespace VDS_Backend.Src.VDSServer
         /// edit a post in db.
         /// </summary>
         /// <param name="ctx">the http context</param>
+        /// <param name="mailer"> the mail handler component</param>
         /// <returns>responses</returns>
-        public string EditPost(HttpContextBase ctx)
+        public async Task<string> EditPost(HttpContextBase ctx, MailHandler mailer)
         {
             // unload the payload
             string body = ctx.Request.DataAsString;
@@ -299,7 +300,7 @@ namespace VDS_Backend.Src.VDSServer
                 }
                 else
                 {
-                    status = dbInterface.EditPost(email, input.Id, input.Title, input.Description,
+                    status = await dbInterface.EditPost(mailer, email, input.Id, input.Title, input.Description,
                         input.Address, input.VolunteerArea, input.JobType, input.InitialDate, input.LastDate);
                 }
 
