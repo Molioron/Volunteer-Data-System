@@ -1,0 +1,11 @@
+﻿POST http://localhost:9000/getfilteredposts
+Content-Type: application/json
+
+{
+  "volunteerAreas": [],
+  "jobTypes": [],
+  "initialDate": "",
+  "endDate": "",
+  "dateFilterType": "Contains",
+  "connectionKey": "A6LAzWMfqGGgOtal"
+}

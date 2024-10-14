@@ -79,7 +79,7 @@ namespace VDS_Backend.Src.Utilities
 
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key.PadRight(32, '0')); // Ensure key is 32 bytes long for AES-256
+                aes.Key = Convert.FromBase64String(key); // convert key back from base64 to byte[]
                 aes.GenerateIV();
                 iv = aes.IV; // Randomly generate an IV
 
@@ -127,7 +127,7 @@ namespace VDS_Backend.Src.Utilities
 
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key.PadRight(32, '0')); // Ensure key is 32 bytes long for AES-256
+                aes.Key = Convert.FromBase64String(key); // convert key back from base64 to byte[]
                 aes.IV = iv;
 
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
@@ -162,6 +162,25 @@ namespace VDS_Backend.Src.Utilities
                 rng.GetBytes(keyBytes);
                 return Convert.ToBase64String(keyBytes);
             }
+        }
+
+        /// <summary>
+        /// Generates key and encrypts json value from given credentials. prints to console result.
+        /// </summary>
+        /// <param name="smtpServerService">name of service</param>
+        /// <param name="appPassword">password of app of service</param>
+        /// <param name="smtpOwnerEmail">email of owner in service</param>
+        public static void GenerateCredentialsEncrypted(string smtpServerService,
+    string appPassword, string smtpOwnerEmail)
+        {
+            const int KEY_LENGTH = 32;
+            string text = $"{{\"SmtpServerService\": \"{smtpServerService}\"," +
+                $" \"AppPassword\": \"{appPassword}\", \"SmtpOwnerEmail\": \"{smtpOwnerEmail}\"}}";
+            string key = GenerateSecureKey(KEY_LENGTH);
+            Console.WriteLine($"original text: {text},\nkey: {key},");
+            string encrypted = EncryptString(key, text);
+
+            Console.WriteLine($"encrypted text: {encrypted}");
         }
     }
 }

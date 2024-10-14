@@ -154,5 +154,10 @@ namespace VDS_Backend.Src.VDSServer
         /// the email of the stmp server owner
         /// </summary>
         public string SmtpOwnerEmail { get; set; }
+
+        public override string ToString()
+        {
+            return $"server service: {SmtpServerService}, password: {AppPassword}, email: {SmtpOwnerEmail}";
+        }
     }
 }
