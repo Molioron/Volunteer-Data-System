@@ -1,0 +1,12 @@
+# Ignore node_modules directory
+volunteer-recruiter-ui/node_modules/
+
+# Ignore release-build directory
+volunteer-recruiter-ui/release-build/
+
+# Ignore Visual Studio Code workspace settings
+volunteer-recruiter-ui/.vscode/
+
+# Ignore other large or temporary files if needed
+*.log
+*.tmp
