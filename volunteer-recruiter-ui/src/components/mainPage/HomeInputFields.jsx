@@ -16,6 +16,30 @@ const jobs = [
   { label: "AnimalCare", value: "AnimalCare" }
 ];
 
+/**
+ * `HomeInputFields` renders filters for selecting areas, job types, and date ranges.
+ * 
+ * Props:
+ * - `initialDate` (string): The start date for filtering posts.
+ * - `lastDate` (string): The end date for filtering posts.
+ * - `dateFilterType` (string): Specifies the type of date filtering.
+ * - `onChange` (function): Callback to handle changes to the form fields.
+ * - `area` (array): List of selected areas for filtering.
+ * - `jobTitle` (array): List of selected job titles for filtering.
+ * 
+ * Usage:
+ * ```jsx
+ * <HomeInputFields
+ *    initialDate="2024-01-01"
+ *    lastDate="2024-12-31"
+ *    dateFilterType="Contains"
+ *    onChange={handleInputChange}
+ *    area={['North', 'Central']}
+ *    jobTitle={['Agriculture', 'Transportation']}
+ * />
+ * ```
+ */
+
 const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area, jobTitle }) => {
 
   // State to manage selected areas and job types, initialized with the props provided

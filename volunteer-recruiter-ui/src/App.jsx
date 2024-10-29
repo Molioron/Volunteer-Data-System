@@ -5,6 +5,20 @@ import HomePage from './components/mainPage/HomePage';
 import MyPostsPage from './components/myPosts/MyPostsPage';
 import AddPost from './components/myPosts/addPost/AddPostPage';
 
+/**
+ * `App` is the main application component that sets up routing for different pages.
+ * 
+ * Routes:
+ * - `/`: Renders the `Auth` component for login/signup.
+ * - `/main`: Renders the `HomePage` component displaying available posts.
+ * - `/my-posts`: Renders the `MyPostsPage` component for viewing user's posts.
+ * - `/add-post`: Renders the `AddPost` component for creating or editing posts.
+ * 
+ * Usage:
+ * ```jsx
+ * import App from './App';
+ * ```
+ */
 function App() {
   return (
     <Router>

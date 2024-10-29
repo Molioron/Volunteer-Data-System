@@ -1,7 +1,19 @@
 import { apiRequest, BASE_URL } from './ApiUtils';
 
+/**
+ * `navigateToHomePage` fetches all posts and navigates to the main page with posts in state.
+ * @param {Function} navigate - Function to navigate to the homepage.
+ */
 export const navigateToHomePage = async (navigate) => {
     try {
+      console.log('Request Body:', {
+        volunteerAreas: [],
+        jobTypes: [],
+        initialDate: '',
+        lastDate: '',
+        dateFilterType: '',
+      });
+
       // Fetch all posts after successful login/signup
       const allPostsResponse = await fetch(BASE_URL + '/getfilteredposts', {
         method: 'POST',
@@ -14,8 +26,11 @@ export const navigateToHomePage = async (navigate) => {
           initialDate: '',
           lastDate: '',
           dateFilterType: '',
+          connectionKey: document.cookie.split('=')[1],
         }) // Send an empty object to fetch all posts without filters
       });
+
+      console.log('Response:', allPostsResponse);
   
       const allPostsResult = await allPostsResponse.json();
       const postsOperationStatus = JSON.parse(allPostsResult.operationStatus);
@@ -27,12 +42,15 @@ export const navigateToHomePage = async (navigate) => {
         alert('Failed to fetch posts');
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Error: ' + error.message);
+      console.log('Error@@@:', error.message);
+      alert('Error!!!!: ' + error.message);
     }
   };
 
-    // Function to fetch the user's posts
+/**
+ * `fetchUserPosts` retrieves posts created by the user and navigates to the 'My Posts' page with posts in state.
+ * @param {Function} navigate - Function to navigate to the 'My Posts' page.
+ */
     export const fetchUserPosts = async (navigate) => {
       try {
         const result = await apiRequest(BASE_URL + '/getuserposts', 'POST', { connectionKey: document.cookie.split('=')[1] });

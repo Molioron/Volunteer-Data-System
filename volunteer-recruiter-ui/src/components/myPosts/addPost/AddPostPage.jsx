@@ -8,6 +8,21 @@ import useFormInput from '../../../hooks/UseFormInput';
 import { apiRequest, BASE_URL } from '../../../utils/ApiUtils';
 import { fetchUserPosts } from '../../../utils/NavigationUtils';
 
+/**
+ * `AddPostPage` allows users to create or edit a post, including details such as title, description, location, job type, and dates.
+ * 
+ * State:
+ * - `formData` (object): Holds the form fields values.
+ * 
+ * Functions:
+ * - `handleSubmit`: Submits form data to create or edit a post.
+ * - `handleResponse`: Processes the server response after form submission.
+ * 
+ * Hooks:
+ * - `useNavigate`: To navigate to different pages.
+ * - `useLocation`: To retrieve post data if navigating from an edit option.
+ */
+
 const AddPostPage = () => {
 
   const navigate = useNavigate();
@@ -24,6 +39,7 @@ const AddPostPage = () => {
     jobType: '',
     initialDate: '',
     lastDate: '',
+    maxVolunteers: '',
   });
 
   useEffect(() => {
@@ -41,7 +57,10 @@ const AddPostPage = () => {
     }
   }, [post, setFormData]); // Dependency array ensures this effect runs only when post or setFormData changes
 
-  // Function to handle form submission for creating or updating a post
+  /**
+   * Handles form submission for creating or updating a post.
+   * @param {Event} e - Form submission event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -49,7 +68,8 @@ const AddPostPage = () => {
     const urlSuffix = post ? '/editpost' : '/createpost';
     const url = BASE_URL + urlSuffix;
     const connectionKey = document.cookie.split('=')[1]; // Get the connection key from cookies
-    const updateformData = { ...formData, connectionKey: connectionKey, id: post?.Id }; // Prepare form data for submission
+    const maxVolunteersValue = formData.maxVolunteers ? parseInt(formData.maxVolunteers, 10) : -1;
+    const updateformData = { ...formData, connectionKey: connectionKey, id: post?.Id,  maxVolunteers: maxVolunteersValue }; // Prepare form data for submission
   
     try {
       const result = await apiRequest(url, 'POST', updateformData);
@@ -59,7 +79,11 @@ const AddPostPage = () => {
     }
   };
 
-  // Function to handle the response after API call
+  /**
+   * Processes server response after form submission, redirecting upon success.
+   * @param {Object} response - Server response object.
+   * @param {string} operation - Type of operation ('/createpost' or '/editpost').
+   */
   const handleResponse = async (response, operation) => {
     try {
       const operationStatus = JSON.parse(response.operationStatus); // Parse the operation status from the response
@@ -82,6 +106,7 @@ const AddPostPage = () => {
       alert('Error: ' + error.message);
     }
   };
+  
 
   return (
     <div className="add-post-page">

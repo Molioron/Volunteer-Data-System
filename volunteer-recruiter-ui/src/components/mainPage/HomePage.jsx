@@ -8,6 +8,23 @@ import useFormInput from '../../hooks/UseFormInput';
 import { apiRequest, BASE_URL } from '../../utils/ApiUtils';
 import { fetchUserPosts } from '../../utils/NavigationUtils';
 
+/**
+ * `HomePage` displays and filters posts based on user-selected criteria.
+ * 
+ * Uses:
+ * - `useNavigate` (hook): To navigate to different routes.
+ * - `useLocation` (hook): To retrieve posts passed from previous route.
+ * - `apiRequest` (function): To communicate with backend for fetching and joining/leaving posts.
+ * 
+ * State:
+ * - `posts` (array): Holds the list of posts for display.
+ * 
+ * Functions:
+ * - `fetchFilteredPosts`: Fetches filtered posts based on selected criteria.
+ * - `handleJoin`: Joins a specified post.
+ * - `handleLeave`: Leaves a specified post.
+ */
+
 
 const HomePage = () => {
 
@@ -36,16 +53,68 @@ const HomePage = () => {
     }
   }, [location.state?.posts]);
 
-  // Function to fetch filtered posts based on the form data
+  /**
+   * Fetches posts that match the selected filter criteria.
+   */
+
   const fetchFilteredPosts = async () => {
     try {
-      const result = await apiRequest( BASE_URL + '/getfilteredposts', 'POST', formData);
-
+      const connectionKey = document.cookie.split('=')[1]; // Get the connection key from cookies
+  
+      const requestData = {
+        ...formData,
+        connectionKey: connectionKey, // Add connection key to the form data
+      };
+  
+      const result = await apiRequest(BASE_URL + '/getfilteredposts', 'POST', requestData);
+  
       const posts = JSON.parse(result.posts);
       setPosts(posts);
     } catch (error) {
       alert('Error: ' + error.message);
-    }  
+    }
+  };
+
+  /**
+   * Sends a request to join a specified post.
+   * @param {string} postId - ID of the post to join.
+   */
+  const handleJoin = async (postId) => {
+    try {
+      const result = await apiRequest(BASE_URL + '/joinpost', 'POST', {
+        connectionKey: document.cookie.split('=')[1], 
+        id: postId, 
+      });
+      const operationStatus = JSON.parse(result.operationStatus);
+      if (operationStatus.Code !== 'Success') {
+        alert('Error: ' + operationStatus.Message);
+      } else {
+        alert('Joined post successfully');
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  };
+
+  /**
+   * Sends a request to leave a specified post.
+   * @param {string} postId - ID of the post to leave.
+   */
+  const handleLeave = async (postId) => {
+    try {
+      const result = await apiRequest(BASE_URL + '/leavepost', 'POST', {
+        connectionKey: document.cookie.split('=')[1], 
+        id: postId, 
+      });
+      const operationStatus = JSON.parse(result.operationStatus);
+      if (operationStatus.Code !== 'Success') {
+        alert('Error: ' + operationStatus.Message);
+      } else {
+        alert('Left post successfully');
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
   };
 
   return (
@@ -53,22 +122,32 @@ const HomePage = () => {
       <Button className="logout-button" onClick={() => handleLogout(navigate)}>Logout</Button>
       <div className="input-fields-container">
         <HomeInputFields
-          area={ formData.volunteerAreas }
-          jobTitle={ formData.jobTypes }
-          initialDate={ formData.initialDate }
-          lastDate={ formData.lastDate }
-          dateType={ formData.dateFilterType }
-          onChange={ handleInputChange }
+          area={formData.volunteerAreas}
+          jobTitle={formData.jobTypes}
+          initialDate={formData.initialDate}
+          lastDate={formData.lastDate}
+          dateType={formData.dateFilterType}
+          onChange={handleInputChange}
         />
         <div className="action-buttons">
-          <Button onClick={ fetchFilteredPosts }>Search</Button>
+          <Button onClick={fetchFilteredPosts}>Search</Button>
           <Button onClick={() => fetchUserPosts(navigate)}>My Posts</Button>
         </div>
       </div>
       <div className="content-container">
-        {/* Here you will render the posts */}
         <h2>Posts</h2>
-        {posts.length > 0 ? posts.map(post => <PostItem key={post.Id} post={post} />) : <p>No posts to display.</p>}
+        {posts.length > 0 ? (
+          posts.map(post => (
+            <PostItem 
+              key={post.Id} 
+              post={post}
+              handleJoin={handleJoin}   
+              handleLeave={handleLeave} 
+            />
+          ))
+        ) : (
+          <p>No posts to display.</p>
+        )}
       </div>
     </div>
   );

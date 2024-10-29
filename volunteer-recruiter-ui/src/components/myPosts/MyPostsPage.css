@@ -1,3 +1,5 @@
+/* MyPostsPage.css defines layout and styles for the My Posts page */
+
 .my-posts-page {
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -91,4 +93,109 @@
 
 .delete-button:hover {
   background-color: #e53935;
+}
+
+.mail-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Shadow for the modal */
+  border-radius: 8px; /* Rounded corners */
+  max-width: 400px; /* Limit the modal width */
+  width: 100%;
+}
+
+.mail-modal textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 4px; /* Rounded corners */
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.mail-modal h4 {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.mail-modal .send-button {
+  background-color: #4CAF50; /* Green for the send button */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mail-modal .send-button:hover {
+  background-color: #45a049;
+}
+
+.mail-modal .close-button {
+  background-color: #f44336; /* Red for the close button */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.mail-modal .close-button:hover {
+  background-color: #e53935;
+}
+
+.send-mail-button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.send-mail-button:hover {
+  background-color: #2196F3;
+}
+
+.volunteers-list {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.volunteers-list h4 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.volunteers-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.volunteers-list li {
+  padding: 5px 0;
+}
+
+.view-volunteers-button {
+  background-color: #ffa500; /* Orange color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-volunteers-button:hover {
+  background-color: #e59400; /* Darker shade of orange for hover */
 }

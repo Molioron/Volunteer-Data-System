@@ -7,6 +7,17 @@ import { navigateToHomePage } from '../../utils/NavigationUtils';
 import useFormInput from '../../hooks/UseFormInput';
 import { apiRequest, BASE_URL } from '../../utils/ApiUtils';
 
+/**
+ * `Auth` component manages the authentication state and handles switching between 
+ * login and signup forms.
+ * 
+ * Uses:
+ * - `useNavigate` (hook): Redirects user post-authentication.
+ * - `useFormInput` (hook): Manages form data state.
+ * - `apiRequest` (function): Makes API calls to the login or signup endpoints.
+ * - `navigateToHomePage` (function): Redirects to the homepage upon successful login/signup.
+ */
+
 const Auth = () => {
 
   const navigate = useNavigate();
@@ -21,6 +32,11 @@ const Auth = () => {
     phone: ''
   });
 
+    /**
+   * Toggles between login and signup forms, and resets form data.
+   * @param {boolean} flag - True for signup, false for login.
+   */
+
   const handleFormSwitch = (flag) => {
     setIsSignup(flag);
     setFormData({
@@ -31,6 +47,11 @@ const Auth = () => {
       phone: ''
     });
   };
+
+    /**
+   * Submits login/signup form data to the relevant API endpoint.
+   * @param {Event} e - Form submission event.
+   */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,6 +65,11 @@ const Auth = () => {
       alert('Error: ' + error.message);
     }
   };
+
+    /**
+   * Handles response from the server, redirecting upon success or showing an alert upon failure.
+   * @param {Object} response - Server response object containing operation status and connection key.
+   */
 
   const handleResponse = async (response) => {
     try {

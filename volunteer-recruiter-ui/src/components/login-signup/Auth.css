@@ -1,4 +1,7 @@
+/* Auth.css provides styling for the authentication components. */
+
 .auth-page {
+  /* Centers the form on the page with a styled container */
   padding: 20px;
   font-family: Arial, sans-serif;
   width: 50%;

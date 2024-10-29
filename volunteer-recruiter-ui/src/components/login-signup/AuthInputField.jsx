@@ -2,11 +2,31 @@ import React from 'react';
 import Button from '../common/Button';
 import InputField from '../common/InputField';
 
+/**
+ * `AuthInputField` renders input fields for login or signup forms based on the `isSignup` prop.
+ * 
+ * Props:
+ * - `isSignup` (boolean): Determines if the form is for signup (true) or login (false).
+ * - `formData` (object): Contains form data for each field (firstName, lastName, email, etc.).
+ * - `handleInputChange` (function): Updates form data on input change.
+ * - `handleSubmit` (function): Handles form submission.
+ * 
+ * Usage:
+ * ```jsx
+ * <AuthInputField
+ *    isSignup={isSignup}
+ *    formData={formData}
+ *    handleInputChange={handleInputChange}
+ *    handleSubmit={handleSubmit}
+ * />
+ * ```
+ */
+
 const AuthInputField = ({ isSignup, formData, handleInputChange, handleSubmit }) => {
   return (
-    // When the form is submitted, call the handleSubmit function
+     // Renders the appropriate fields for login or signup based on `isSignup`
     <form onSubmit={handleSubmit}> 
-      {isSignup ? ( // If isSignup is true, display Signup form fields
+      {isSignup ? ( 
         <>
           <h2>Signup</h2>
           <InputField label="First Name:" type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required autoComplete="given-name" />
