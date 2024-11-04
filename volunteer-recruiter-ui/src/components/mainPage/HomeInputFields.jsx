@@ -21,7 +21,7 @@ const jobs = [
  * 
  * Props:
  * - `initialDate` (string): The start date for filtering posts.
- * - `lastDate` (string): The end date for filtering posts.
+ * - `endDate` (string): The end date for filtering posts.
  * - `dateFilterType` (string): Specifies the type of date filtering.
  * - `onChange` (function): Callback to handle changes to the form fields.
  * - `area` (array): List of selected areas for filtering.
@@ -40,7 +40,7 @@ const jobs = [
  * ```
  */
 
-const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area, jobTitle }) => {
+const HomeInputFields = ({ initialDate, endDate, dateFilterType, onChange, area, jobTitle }) => {
 
   // State to manage selected areas and job types, initialized with the props provided
   const [selectedAreas, setSelectedAreas] = useState(area.map(a => ({ label: a, value: a })));
@@ -85,7 +85,7 @@ const HomeInputFields = ({ initialDate, lastDate, dateFilterType, onChange, area
       </div>
 
       <InputField label="Initial Date:" type="date" name="initialDate" value={initialDate} onChange={onChange} />
-      <InputField label="End Date:" type="date" name="lastDate" value={lastDate} onChange={onChange} />
+      <InputField label="End Date:" type="date" name="endDate" value={endDate} onChange={onChange} />
       <InputField label="Date Type:" type="select" name="dateFilterType" value={dateFilterType} onChange={onChange} options={[
         { label: "Select Date Type", value: "" },
         { label: "Contains", value: "Contains" },

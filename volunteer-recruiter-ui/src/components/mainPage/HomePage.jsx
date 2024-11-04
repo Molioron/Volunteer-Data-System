@@ -36,7 +36,7 @@ const HomePage = () => {
     volunteerAreas: [],
     jobTypes: [],
     initialDate: '',
-    lastDate: '',
+    endDate: '',
     dateFilterType: '',
   });
 
@@ -69,10 +69,19 @@ const HomePage = () => {
       const result = await apiRequest(BASE_URL + '/getfilteredposts', 'POST', requestData);
   
       const posts = JSON.parse(result.posts);
+      console.log(posts);
       setPosts(posts);
     } catch (error) {
       alert('Error: ' + error.message);
     }
+  };
+
+  const toggleJoinStatus = (postId) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.Id === postId ? { ...post, IsUserInPost: !post.IsUserInPost } : post
+      )
+    );
   };
 
   /**
@@ -90,6 +99,7 @@ const HomePage = () => {
         alert('Error: ' + operationStatus.Message);
       } else {
         alert('Joined post successfully');
+        toggleJoinStatus(postId);
       }
     } catch (error) {
       alert('Error: ' + error.message);
@@ -111,6 +121,7 @@ const HomePage = () => {
         alert('Error: ' + operationStatus.Message);
       } else {
         alert('Left post successfully');
+        toggleJoinStatus(postId);
       }
     } catch (error) {
       alert('Error: ' + error.message);
@@ -125,7 +136,7 @@ const HomePage = () => {
           area={formData.volunteerAreas}
           jobTitle={formData.jobTypes}
           initialDate={formData.initialDate}
-          lastDate={formData.lastDate}
+          endDate={formData.endDate}
           dateType={formData.dateFilterType}
           onChange={handleInputChange}
         />

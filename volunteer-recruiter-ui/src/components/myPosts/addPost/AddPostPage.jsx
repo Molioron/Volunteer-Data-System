@@ -120,7 +120,9 @@ const AddPostPage = () => {
           jobType={formData.jobType}
           initialDate={formData.initialDate}
           lastDate={formData.lastDate}
+          maxVolunteers={formData.maxVolunteers}
           onChange={handleInputChange}
+          isEdit={!!post} // Pass true if editing an existing post
         />
       </div>
       <div className="add-post-action-button">

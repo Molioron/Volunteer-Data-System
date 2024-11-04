@@ -65,8 +65,11 @@ export const handleLogout = async (navigate) => {
       <p><strong>Phone Number:</strong> {post.PhoneNumber}</p>
       <p><strong>Dates:</strong> {formatDate(post.InitialDate)} - {formatDate(post.LastDate)}</p>
   
-      <Button className="join-button" onClick={() => handleJoin(post.Id)}>Join</Button>
+      {post.IsUserInPost ? (
       <Button className="leave-button" onClick={() => handleLeave(post.Id)}>Leave</Button>
+    ) : (
+      <Button className="join-button" onClick={() => handleJoin(post.Id)}>Join</Button>
+    )}
     </div>
   );
 

@@ -30,7 +30,7 @@ import InputField from '../../common/InputField';
  * ```
  */
 
-const AddPostInputField = ({ title, description, address, volunteerArea, jobType, initialDate, lastDate, maxVolunteers, onChange }) => {
+const AddPostInputField = ({ title, description, address, volunteerArea, jobType, initialDate, lastDate, maxVolunteers, onChange, isEdit }) => {
   return (
     <div className="add-post-input-fields">
       <InputField label="Title:" type="text" name="title" value={title} onChange={onChange} required />
@@ -51,8 +51,17 @@ const AddPostInputField = ({ title, description, address, volunteerArea, jobType
       ]} />
       <InputField label="Initial Date:" type="date" name="initialDate" value={initialDate} onChange={onChange} />
       <InputField label="End Date:" type="date" name="lastDate" value={lastDate} onChange={onChange} />
-      <InputField label="Max Volunteers:" type="text" name="maxVolunteers" value={maxVolunteers} onChange={onChange} 
-        placeholder="Enter max volunteers or leave empty for no limit" />
+      {/* Conditionally render Max Volunteers only if not editing */}
+      {!isEdit && (
+        <InputField
+        label="Max Volunteers (negative number to unlimited):"
+        type="text"
+        name="maxVolunteers"
+        value={maxVolunteers}
+        onChange={onChange}
+        placeholder="Enter max volunteers or leave empty for no limit"
+      />
+      )}
     </div>
   );
 };
